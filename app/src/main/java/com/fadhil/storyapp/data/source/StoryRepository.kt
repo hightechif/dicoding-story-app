@@ -151,7 +151,7 @@ class StoryRepository @Inject constructor(
                 }
             }
 
-            override fun shouldFetch(data: List<Story>?) = data == null || reload
+            override fun shouldFetch(data: List<Story>?) = data?.isNotEmpty() != true || reload
 
         }.asFlow()
 

@@ -139,7 +139,6 @@ class LoginActivity : AppCompatActivity() {
                 override fun success(data: ResLogin?) {
                     hideLoadIndicator()
                     if (data != null) {
-                        viewModel.email
                         HomeActivity.open(this@LoginActivity)
                     }
                 }

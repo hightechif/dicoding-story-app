@@ -7,12 +7,11 @@ import okhttp3.Response
 import timber.log.Timber
 
 class AuthInterceptor(
-    httpHeaderLocalSource: HttpHeaderLocalSource
+    private val httpHeaderLocalSource: HttpHeaderLocalSource
 ) : Interceptor {
 
-    private val headers = httpHeaderLocalSource.getCached()
-
     override fun intercept(chain: Interceptor.Chain): Response {
+        val headers = httpHeaderLocalSource.getCached()
         val accessToken = headers?.get("Authorization") ?: String.Empty
         Timber.d("token=$accessToken")
         val requestBuilder = chain.request().newBuilder()
