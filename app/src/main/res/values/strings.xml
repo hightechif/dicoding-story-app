@@ -27,4 +27,5 @@
     <string name="dark_mode">Dark Mode</string>
     <string name="logout">Logout</string>
     <string name="change_language">Change Language</string>
+    <string name="add_story">add story</string>
 </resources>

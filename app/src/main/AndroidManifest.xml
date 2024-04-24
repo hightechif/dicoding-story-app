@@ -16,6 +16,9 @@
         android:theme="@style/Theme.StoryApp"
         tools:targetApi="31">
         <activity
+            android:name=".ui.screen.add.AddStoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.screen.splash.SplashActivity"
             android:exported="true"
             android:theme="@style/SplashTheme">

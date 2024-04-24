@@ -1,11 +1,12 @@
 package com.fadhil.storyapp.ui.screen.home.list
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +15,7 @@ import com.fadhil.storyapp.data.ProcessResult
 import com.fadhil.storyapp.data.ProcessResultDelegate
 import com.fadhil.storyapp.databinding.FragmentStoryListBinding
 import com.fadhil.storyapp.domain.model.Story
+import com.fadhil.storyapp.ui.screen.add.AddStoryActivity
 import com.fadhil.storyapp.ui.screen.home.list.adapter.StoryAdapter
 import com.fadhil.storyapp.ui.screen.home.list.adapter.StoryDelegate
 import com.fadhil.storyapp.util.MarginItemDecoration
@@ -63,6 +65,10 @@ class StoryListFragment : Fragment() {
                     )
                 view.findNavController().navigate(toDetailUserFragment)
             }
+        }
+
+        binding.fabAdd.setOnClickListener {
+            AddStoryActivity.open(requireActivity())
         }
     }
 
