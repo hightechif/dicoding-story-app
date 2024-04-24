@@ -18,7 +18,7 @@
     <string name="repository">Repository</string>
     <string name="followers">Followers</string>
     <string name="following">Following</string>
-    <string name="share">Share GitHub Profile URL</string>
+    <string name="share">Share Story</string>
     <string name="searchbar_hint">Search user by username</string>
     <string name="favorite">Favorite</string>
     <string name="setting">Pengaturan</string>

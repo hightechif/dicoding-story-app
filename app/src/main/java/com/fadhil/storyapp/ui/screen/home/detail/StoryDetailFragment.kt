@@ -2,17 +2,18 @@ package com.fadhil.storyapp.ui.screen.home.detail
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.fadhil.storyapp.data.ProcessResult
 import com.fadhil.storyapp.data.ProcessResultDelegate
 import com.fadhil.storyapp.databinding.FragmentStoryDetailBinding
 import com.fadhil.storyapp.domain.model.Story
+import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -67,10 +68,11 @@ class StoryDetailFragment : Fragment() {
     private fun share() {
         val sharingIntent = Intent(Intent.ACTION_SEND)
         sharingIntent.type = "text/plain"
-        sharingIntent.putExtra(
-            Intent.EXTRA_TEXT,
-            String.format("https://www.github.com/%s", binding.tvUsername.text.toString())
-        )
+        val map = hashMapOf<String, String?>()
+        map["name"] = binding.tvName.text.toString()
+        map["description"] = binding.tvDescription.text.toString()
+        val json = Gson().toJson(map)
+        sharingIntent.putExtra(Intent.EXTRA_TEXT, json)
         startActivity(Intent.createChooser(sharingIntent, "Share github user"))
     }
 
@@ -103,7 +105,7 @@ class StoryDetailFragment : Fragment() {
         viewModel.setAvatarUrl(data.photoUrl)
         with(binding) {
             tvName.text = data.name
-            tvUsername.text = data.description
+            tvDescription.text = data.description
             Glide.with(requireContext()).load(data.photoUrl).into(imgAvatar)
         }
     }

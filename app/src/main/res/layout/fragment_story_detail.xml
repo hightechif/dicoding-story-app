@@ -71,133 +71,16 @@
                     tools:ignore="TextContrastCheck" />
 
                 <TextView
-                    android:id="@+id/tvUsername"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tvDescription"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dimen_16dp"
                     android:layout_marginEnd="@dimen/dimen_16dp"
-                    android:text="@string/username"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.498"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvName" />
-
-                <TableLayout
-                    android:id="@+id/tlLocationNCompany"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:orientation="horizontal"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvUsername">
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2"
-                        android:gravity="center"
-                        tools:ignore="UselessParent">
-
-                        <TextView
-                            android:id="@+id/tvCompany"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/dimen_4dp"
-                            android:ellipsize="end"
-                            android:maxLength="15"
-                            android:maxLines="2"
-                            android:text="@string/company"
-                            android:textAlignment="textEnd" />
-
-                        <TextView
-                            android:id="@+id/tvLocation"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/dimen_4dp"
-                            android:text="@string/location"
-                            android:textAlignment="textStart" />
-                    </TableRow>
-                </TableLayout>
-
-                <TextView
-                    android:id="@+id/tvRepositoryCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/text_16sp"
-                    android:textSize="@dimen/text_16sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="@+id/tvRepositoryLabel"
-                    app:layout_constraintHorizontal_chainStyle="packed"
-                    app:layout_constraintStart_toStartOf="@+id/tvRepositoryLabel"
-                    app:layout_constraintTop_toBottomOf="@+id/tlLocationNCompany"
-                    tools:ignore="TextContrastCheck"
-                    tools:text="122" />
-
-                <TextView
-                    android:id="@+id/tvFollowersCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_16dp"
-                    android:textSize="@dimen/text_16sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="@+id/tvFollowersLabel"
-                    app:layout_constraintStart_toStartOf="@+id/tvFollowersLabel"
-                    app:layout_constraintTop_toBottomOf="@+id/tlLocationNCompany"
-                    tools:ignore="TextContrastCheck"
-                    tools:text="1398" />
-
-                <TextView
-                    android:id="@+id/tvFollowingCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_16dp"
-                    android:textSize="@dimen/text_16sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="@+id/tvFollowingLabel"
-                    app:layout_constraintStart_toStartOf="@+id/tvFollowingLabel"
-                    app:layout_constraintTop_toBottomOf="@+id/tlLocationNCompany"
-                    tools:ignore="TextContrastCheck"
-                    tools:text="1428" />
-
-                <TextView
-                    android:id="@+id/tvFollowersLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_4dp"
-                    android:text="@string/followers"
-                    app:layout_constraintEnd_toStartOf="@+id/tvFollowingLabel"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/tvRepositoryLabel"
-                    app:layout_constraintTop_toBottomOf="@+id/tvFollowersCount"
-                    tools:ignore="TextContrastCheck" />
-
-                <TextView
-                    android:id="@+id/tvFollowingLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_4dp"
-                    android:layout_marginEnd="@dimen/dimen_16dp"
-                    android:text="@string/following"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/tvFollowersLabel"
-                    app:layout_constraintTop_toBottomOf="@+id/tvFollowingCount"
-                    tools:ignore="TextContrastCheck" />
-
-                <TextView
-                    android:id="@+id/tvRepositoryLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dimen_16dp"
-                    android:layout_marginTop="@dimen/dimen_4dp"
-                    android:text="@string/repository"
-                    app:layout_constraintEnd_toStartOf="@+id/tvFollowersLabel"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintHorizontal_chainStyle="spread"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvRepositoryCount"
-                    tools:ignore="TextContrastCheck" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvName"
+                    tools:text="Descriotion" />
 
                 <Button
                     android:id="@+id/btnShare"
@@ -211,7 +94,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvFollowersLabel"
+                    app:layout_constraintTop_toBottomOf="@+id/tvDescription"
                     app:layout_constraintVertical_bias="1.0"
                     tools:ignore="TextContrastCheck" />
 
