@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">Story App</string>
+    <string name="full_name">Nama Lengkap</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="semicolon">:</string>
+    <string name="login">Login</string>
+    <string name="register">Daftar</string>
+
+
+    <string name="label_detail">Detail User</string>
+    <string name="name">Name</string>
+    <string name="username">Username</string>
+    <string name="company">Company</string>
+    <string name="location">Location</string>
+    <string name="illustration">Illustration</string>
+    <string name="btn_detail">Detail</string>
+    <string name="repository">Repository</string>
+    <string name="followers">Followers</string>
+    <string name="following">Following</string>
+    <string name="share">Share GitHub Profile URL</string>
+    <string name="searchbar_hint">Search user by username</string>
+    <string name="favorite">Favorite</string>
+    <string name="setting">Pengaturan</string>
+    <string name="empty_favorites_text">Favorite user list is empty</string>
+    <string name="setting_activity">Setting Activity</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="logout">Logout</string>
+    <string name="change_language">Change Language</string>
+</resources>

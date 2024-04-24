@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/storyListFragment">
+
+    <fragment
+        android:id="@+id/storyListFragment"
+        android:name="com.fadhil.storyapp.ui.screen.home.list.StoryListFragment"
+        android:label="StoryListFragment"
+        tools:layout="@layout/fragment_story_list">
+        <action
+            android:id="@+id/action_storyListFragment_to_storyDetailFragment"
+            app:destination="@id/storyDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/storyDetailFragment"
+        android:name="com.fadhil.storyapp.ui.screen.home.detail.StoryDetailFragment"
+        android:label="DetailUserFragment"
+        tools:layout="@layout/fragment_story_detail">
+        <argument
+            android:name="id"
+            app:argType="string" />
+    </fragment>
+</navigation>

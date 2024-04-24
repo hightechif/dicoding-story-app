@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Text color -->
+    <color name="primaryTextColor">#f5f5f5</color>
+    <color name="secondaryTextColor">#fafafa</color>
+
+    <!-- Light mode color   -->
+    <color name="primaryColor">#333333</color>
+    <color name="primaryColorVariant">#4078c0</color>
+    <color name="secondaryColor">#bd2c00</color>
+    <color name="secondaryColorVariant">#6cc644</color>
+
+    <!-- Dark mode color   -->
+    <color name="primaryDarkColor">#6e5494</color>
+    <color name="primaryDarkColorVariant">#000053</color>
+    <color name="secondaryDarkColor">#b73d2a</color>
+    <color name="secondaryDarkColorVariant">#5f5f5f</color>
+
+    <!-- Custom colors -->
+    <color name="colorTransparent">#D9FFFFFF</color>
+</resources>
