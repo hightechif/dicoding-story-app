@@ -1,17 +1,31 @@
 package com.fadhil.storyapp.ui.screen.home.list.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.fadhil.storyapp.databinding.ItemRowStoryBinding
 import com.fadhil.storyapp.domain.model.Story
 
 class StoryAdapter : RecyclerView.Adapter<StoryViewHolder>() {
 
-    private val mList: MutableList<Story> = mutableListOf()
     var delegate: StoryDelegate? = null
     private lateinit var binding: ItemRowStoryBinding
+
+    private val diffUtil = object : DiffUtil.ItemCallback<Story>() {
+        override fun areItemsTheSame(oldItem: Story, newItem: Story):
+                Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Story, newItem: Story):
+                Boolean {
+            return oldItem == newItem
+        }
+    }
+
+    private val asyncListDiffer = AsyncListDiffer(this, diffUtil)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoryViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -20,22 +34,17 @@ class StoryAdapter : RecyclerView.Adapter<StoryViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: StoryViewHolder, position: Int) {
-        holder.bind(mList, position, delegate)
+        holder.bind(asyncListDiffer.currentList, position, delegate)
     }
 
-    override fun getItemCount() = mList.size
+    override fun getItemCount() = asyncListDiffer.currentList.size
 
-    @SuppressLint("NotifyDataSetChanged")
     fun setData(newList: List<Story>) {
-        mList.clear()
-        mList.addAll(newList)
-        notifyDataSetChanged()
+        asyncListDiffer.submitList(newList)
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     fun clearData() {
-        mList.clear()
-        notifyDataSetChanged()
+        asyncListDiffer.submitList(emptyList())
     }
 
 }
