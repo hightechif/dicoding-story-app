@@ -28,4 +28,8 @@
     <string name="logout">Logout</string>
     <string name="change_language">Change Language</string>
     <string name="add_story">add story</string>
+    <string name="description">description</string>
+    <string name="upload">Upload</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
 </resources>

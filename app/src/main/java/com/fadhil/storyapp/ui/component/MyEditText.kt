@@ -2,13 +2,13 @@ package com.fadhil.storyapp.ui.component
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.drawable.Drawable
 import android.text.InputType.TYPE_CLASS_TEXT
 import android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
 import android.util.AttributeSet
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatEditText
 import com.fadhil.storyapp.R
+import com.fadhil.storyapp.util.ConvertUtils.dp
 
 
 class MyEditText : AppCompatEditText {
@@ -23,10 +23,9 @@ class MyEditText : AppCompatEditText {
         defStyleAttr
     )
 
-    private lateinit var originalDrawable: Drawable
-
     init {
-        originalDrawable = background
+        background = AppCompatResources.getDrawable(context, R.drawable.bg_normal)
+        setPadding(12.dp, 12.dp, 12.dp, 12.dp)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -51,7 +50,7 @@ class MyEditText : AppCompatEditText {
                 error = "Password tidak boleh kurang dari 8 karakter."
             } else {
                 error = null
-                background = originalDrawable
+                background = AppCompatResources.getDrawable(context, R.drawable.bg_normal)
             }
         }
     }
