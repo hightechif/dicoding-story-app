@@ -20,25 +20,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class RegisterActivity : AppCompatActivity() {
 
-    companion object {
-        private const val EXTRA_EMAIL = "email"
-        private const val EXTRA_PASSWORD = "password"
-        const val EXTRA_REGISTRATION_STATUS = "registration_status"
-
-        fun open(
-            originContext: AppCompatActivity,
-            email: String?,
-            password: String?,
-            resultLauncher: ActivityResultLauncher<Intent>? = null
-        ) {
-            val intent = Intent(originContext, RegisterActivity::class.java)
-            if (email?.isNotEmpty() == true) intent.putExtra(EXTRA_EMAIL, email)
-            if (password?.isNotEmpty() == true) intent.putExtra(EXTRA_PASSWORD, password)
-            if (resultLauncher == null) ActivityCompat.startActivity(originContext, intent, null)
-            else resultLauncher.launch(intent)
-        }
-    }
-
     private lateinit var binding: ActivityRegisterBinding
     private val viewModel: RegisterViewModel by viewModels()
 
@@ -154,6 +135,25 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun hideLoadIndicator() {
         binding.flProgress.isVisible = false
+    }
+
+    companion object {
+        private const val EXTRA_EMAIL = "email"
+        private const val EXTRA_PASSWORD = "password"
+        const val EXTRA_REGISTRATION_STATUS = "registration_status"
+
+        fun open(
+            originContext: AppCompatActivity,
+            email: String?,
+            password: String?,
+            resultLauncher: ActivityResultLauncher<Intent>? = null
+        ) {
+            val intent = Intent(originContext, RegisterActivity::class.java)
+            if (email?.isNotEmpty() == true) intent.putExtra(EXTRA_EMAIL, email)
+            if (password?.isNotEmpty() == true) intent.putExtra(EXTRA_PASSWORD, password)
+            if (resultLauncher == null) ActivityCompat.startActivity(originContext, intent, null)
+            else resultLauncher.launch(intent)
+        }
     }
 
 }

@@ -17,19 +17,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class HomeActivity : AppCompatActivity() {
 
-    companion object {
-        private const val EXTRA_DATA = "data"
-
-        fun open(originContext: AppCompatActivity, data: Any? = null) {
-            val intent = Intent(originContext, HomeActivity::class.java)
-            val jsonOfData = Gson().toJson(data)
-            if (data != null) intent.putExtra(EXTRA_DATA, jsonOfData)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or
-                    Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            ActivityCompat.startActivity(originContext, intent, null)
-        }
-    }
-
     private lateinit var binding: ActivityHomeBinding
     private val viewModel: HomeViewModel by viewModels()
 
@@ -75,4 +62,18 @@ class HomeActivity : AppCompatActivity() {
             if (it) LoginActivity.open(this)
         }
     }
+
+    companion object {
+        private const val EXTRA_DATA = "data"
+
+        fun open(originContext: AppCompatActivity, data: Any? = null) {
+            val intent = Intent(originContext, HomeActivity::class.java)
+            val jsonOfData = Gson().toJson(data)
+            if (data != null) intent.putExtra(EXTRA_DATA, jsonOfData)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            ActivityCompat.startActivity(originContext, intent, null)
+        }
+    }
+
 }

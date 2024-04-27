@@ -29,16 +29,6 @@ import timber.log.Timber
 @AndroidEntryPoint
 class AddStoryActivity : AppCompatActivity() {
 
-    companion object {
-        fun open(
-            originActivity: FragmentActivity,
-            resultLauncher: ActivityResultLauncher<Intent>
-        ) {
-            val intent = Intent(originActivity, AddStoryActivity::class.java)
-            resultLauncher.launch(intent)
-        }
-    }
-
     private lateinit var binding: ActivityAddStoryBinding
     private val viewModel: AddStoryViewModel by viewModels()
     private var currentImageUri: Uri? = null
@@ -190,6 +180,16 @@ class AddStoryActivity : AppCompatActivity() {
             }
 
         })
+    }
+
+    companion object {
+        fun open(
+            originActivity: FragmentActivity,
+            resultLauncher: ActivityResultLauncher<Intent>
+        ) {
+            val intent = Intent(originActivity, AddStoryActivity::class.java)
+            resultLauncher.launch(intent)
+        }
     }
 
 }

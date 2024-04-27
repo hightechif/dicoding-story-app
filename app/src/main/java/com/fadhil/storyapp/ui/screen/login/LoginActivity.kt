@@ -23,19 +23,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
 
-    companion object {
-        private const val EXTRA_DATA = "data"
-
-        fun open(originContext: AppCompatActivity, data: Any? = null) {
-            val intent = Intent(originContext, LoginActivity::class.java)
-            val jsonOfData = Gson().toJson(data)
-            if (data != null) intent.putExtra(EXTRA_DATA, jsonOfData)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or
-                    Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            ActivityCompat.startActivity(originContext, intent, null)
-        }
-    }
-
     private lateinit var binding: ActivityLoginBinding
     private val viewModel: LoginViewModel by viewModels()
 
@@ -153,6 +140,19 @@ class LoginActivity : AppCompatActivity() {
 
     private fun hideLoadIndicator() {
         binding.flProgress.isVisible = false
+    }
+
+    companion object {
+        private const val EXTRA_DATA = "data"
+
+        fun open(originContext: AppCompatActivity, data: Any? = null) {
+            val intent = Intent(originContext, LoginActivity::class.java)
+            val jsonOfData = Gson().toJson(data)
+            if (data != null) intent.putExtra(EXTRA_DATA, jsonOfData)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            ActivityCompat.startActivity(originContext, intent, null)
+        }
     }
 
 }

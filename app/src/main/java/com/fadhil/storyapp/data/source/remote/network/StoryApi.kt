@@ -1,5 +1,6 @@
 package com.fadhil.storyapp.data.source.remote.network
 
+import com.fadhil.storyapp.BuildConfig
 import com.fadhil.storyapp.data.source.local.prefs.HttpHeaderLocalSource
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -21,12 +22,25 @@ object StoryApi {
         return AuthInterceptor(httpHeaderLocalSource)
     }
 
-    fun buildClient(loggerInterceptor: HttpLoggingInterceptor, authInterceptor: AuthInterceptor): OkHttpClient = OkHttpClient.Builder()
-        .addInterceptor(loggerInterceptor)
-        .addInterceptor(authInterceptor)
-        .connectTimeout(100, TimeUnit.SECONDS)
-        .readTimeout(100, TimeUnit.SECONDS)
-        .build()
+    fun buildClient(
+        loggerInterceptor: HttpLoggingInterceptor,
+        authInterceptor: AuthInterceptor
+    ): OkHttpClient =
+        if (BuildConfig.DEBUG) {
+            OkHttpClient.Builder()
+                .addInterceptor(loggerInterceptor)
+                .addInterceptor(authInterceptor)
+                .connectTimeout(100, TimeUnit.SECONDS)
+                .readTimeout(100, TimeUnit.SECONDS)
+                .build()
+        } else {
+            OkHttpClient.Builder()
+                .addInterceptor(authInterceptor)
+                .connectTimeout(100, TimeUnit.SECONDS)
+                .readTimeout(100, TimeUnit.SECONDS)
+                .build()
+        }
+
 
     /**
      * Use the Retrofit builder to build a retrofit object using a Moshi converter with our Moshi
