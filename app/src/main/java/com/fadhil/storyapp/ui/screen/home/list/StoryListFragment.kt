@@ -1,10 +1,11 @@
 package com.fadhil.storyapp.ui.screen.home.list
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -19,6 +20,7 @@ import com.fadhil.storyapp.ui.screen.add.AddStoryActivity
 import com.fadhil.storyapp.ui.screen.home.list.adapter.StoryAdapter
 import com.fadhil.storyapp.ui.screen.home.list.adapter.StoryDelegate
 import com.fadhil.storyapp.util.MarginItemDecoration
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -27,6 +29,18 @@ class StoryListFragment : Fragment() {
     private lateinit var binding: FragmentStoryListBinding
     private val viewModel: StoryListViewModel by viewModels()
     private val mStoryAdapter: StoryAdapter = StoryAdapter()
+
+    private val resultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                Snackbar.make(
+                    binding.root,
+                    "Upload process complete.",
+                    Snackbar.LENGTH_SHORT
+                ).show()
+                loadData()
+            }
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -68,7 +82,7 @@ class StoryListFragment : Fragment() {
         }
 
         binding.fabAdd.setOnClickListener {
-            AddStoryActivity.open(requireActivity())
+            AddStoryActivity.open(requireActivity(), resultLauncher)
         }
     }
 
@@ -77,29 +91,30 @@ class StoryListFragment : Fragment() {
     }
 
     private fun getAllStories() {
-        viewModel.getAllStories(0, 10, 1, true).observe(viewLifecycleOwner) {
-            ProcessResult(it, object : ProcessResultDelegate<List<Story>?> {
-                override fun loading() {
-                    showLoadIndicator()
-                }
-
-                override fun error(code: String?, message: String?) {
-                    hideLoadIndicator()
-                }
-
-                override fun unAuthorize(message: String?) {
-                    hideLoadIndicator()
-                }
-
-                override fun success(data: List<Story>?) {
-                    hideLoadIndicator()
-                    if (data?.isNotEmpty() == true) {
-                        mStoryAdapter.setData(data)
+        viewModel.getAllStories(true)
+            .observe(viewLifecycleOwner) {
+                ProcessResult(it, object : ProcessResultDelegate<List<Story>?> {
+                    override fun loading() {
+                        showLoadIndicator()
                     }
-                }
 
-            })
-        }
+                    override fun error(code: String?, message: String?) {
+                        hideLoadIndicator()
+                    }
+
+                    override fun unAuthorize(message: String?) {
+                        hideLoadIndicator()
+                    }
+
+                    override fun success(data: List<Story>?) {
+                        hideLoadIndicator()
+                        if (data?.isNotEmpty() == true) {
+                            mStoryAdapter.setData(data)
+                        }
+                    }
+
+                })
+            }
     }
 
     private fun showLoadIndicator() {

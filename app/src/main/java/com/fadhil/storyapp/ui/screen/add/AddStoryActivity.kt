@@ -5,11 +5,12 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
@@ -21,7 +22,6 @@ import com.fadhil.storyapp.data.source.remote.response.FileUploadResponse
 import com.fadhil.storyapp.databinding.ActivityAddStoryBinding
 import com.fadhil.storyapp.util.CameraUtils
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -30,19 +30,25 @@ import timber.log.Timber
 class AddStoryActivity : AppCompatActivity() {
 
     companion object {
-        private const val EXTRA_DATA = "data"
-
-        fun open(originContext: FragmentActivity, data: Any? = null) {
-            val intent = Intent(originContext, AddStoryActivity::class.java)
-            val jsonOfData = Gson().toJson(data)
-            if (data != null) intent.putExtra(EXTRA_DATA, jsonOfData)
-            ActivityCompat.startActivity(originContext, intent, null)
+        fun open(
+            originActivity: FragmentActivity,
+            resultLauncher: ActivityResultLauncher<Intent>
+        ) {
+            val intent = Intent(originActivity, AddStoryActivity::class.java)
+            resultLauncher.launch(intent)
         }
     }
 
     private lateinit var binding: ActivityAddStoryBinding
     private val viewModel: AddStoryViewModel by viewModels()
     private var currentImageUri: Uri? = null
+
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            setResult(RESULT_CANCELED)
+            finish()
+        }
+    }
 
     private val launcherIntentCamera = registerForActivityResult(
         ActivityResultContracts.TakePicture()
@@ -82,6 +88,7 @@ class AddStoryActivity : AppCompatActivity() {
     }
 
     private fun setupListener() {
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
         binding.btnCamera.setOnClickListener {
             startCamera()
         }
@@ -178,11 +185,8 @@ class AddStoryActivity : AppCompatActivity() {
             }
 
             override fun success(data: FileUploadResponse?) {
-                Snackbar.make(
-                    binding.root,
-                    "Upload process complete.",
-                    Snackbar.LENGTH_SHORT
-                ).show()
+                setResult(RESULT_OK)
+                finish()
             }
 
         })

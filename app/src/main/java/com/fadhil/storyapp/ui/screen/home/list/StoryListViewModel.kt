@@ -11,7 +11,11 @@ class StoryListViewModel @Inject constructor(
     private val useCase: StoryUseCase
 ) : ViewModel() {
 
-    fun getAllStories(page: Int?, size: Int?, location: Int?, reload: Boolean) =
+    val page = 0
+    val size = 10
+    val location = 0
+
+    fun getAllStories(reload: Boolean) =
         useCase.getAllStory(page, size, location, reload).asLiveData()
 
 }
