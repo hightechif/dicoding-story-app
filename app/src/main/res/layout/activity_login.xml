@@ -54,34 +54,24 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <!-- Email Field -->
-            <com.google.android.material.card.MaterialCardView
+            <com.fadhil.storyapp.ui.component.MyEditText
+                android:id="@+id/etEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dimen_16dp">
-
-                <com.fadhil.storyapp.ui.component.MyEditText
-                    android:id="@+id/etEmail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/dimen_8dp"
-                    android:hint="@string/email"
-                    android:inputType="textEmailAddress" />
-            </com.google.android.material.card.MaterialCardView>
+                android:layout_marginHorizontal="@dimen/dimen_8dp"
+                android:layout_marginBottom="@dimen/dimen_16dp"
+                android:hint="@string/email"
+                android:inputType="textEmailAddress" />
 
             <!-- Password Field -->
-            <com.google.android.material.card.MaterialCardView
+            <com.fadhil.storyapp.ui.component.MyEditText
+                android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dimen_32dp">
-
-                <com.fadhil.storyapp.ui.component.MyEditText
-                    android:id="@+id/etPassword"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/dimen_8dp"
-                    android:hint="@string/password"
-                    android:inputType="textPassword" />
-            </com.google.android.material.card.MaterialCardView>
+                android:layout_marginHorizontal="@dimen/dimen_8dp"
+                android:layout_marginBottom="@dimen/dimen_32dp"
+                android:hint="@string/password"
+                android:inputType="textPassword"/>
 
             <!-- Login Button -->
             <com.google.android.material.button.MaterialButton
