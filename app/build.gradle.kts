@@ -47,7 +47,7 @@ val versions by rootProject.extra(
     mapOf(
         /** jetpack */
         "core_ktx_version" to "1.10.1",
-        "appcompat_version" to "1.4.1",
+        "appcompat_version" to "1.6.1",
         "activity_ktx_version" to "1.4.0",
         "constraintlayout_version" to "2.1.4",
         "cardview_version" to "1.0.0",
