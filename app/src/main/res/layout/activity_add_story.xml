@@ -41,6 +41,7 @@
     </FrameLayout>
 
     <com.fadhil.storyapp.ui.component.MyEditText
+        android:id="@+id/etDescription"
         android:layout_width="300dp"
         android:layout_height="150dp"
         android:layout_gravity="center"
