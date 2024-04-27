@@ -2,8 +2,7 @@ package com.fadhil.storyapp.data.source.remote
 
 import com.fadhil.storyapp.data.Result
 import com.fadhil.storyapp.data.source.remote.network.StoryApiService
-import com.fadhil.storyapp.data.source.remote.request.ReqStory
-import com.fadhil.storyapp.data.source.remote.response.ApiResponse
+import com.fadhil.storyapp.data.source.remote.response.FileUploadResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import javax.inject.Inject
@@ -14,15 +13,15 @@ class StoryRemoteDataSource @Inject constructor(
 
     suspend fun addNewStory(
         photo: MultipartBody.Part,
-        request: ReqStory
-    ): Result<ApiResponse<Any?>?> {
+        request: RequestBody
+    ): Result<FileUploadResponse?> {
         return getResult { service.addNewStory(photo, request) }
     }
 
     suspend fun addNewStoryAsGuest(
         file: MultipartBody.Part,
-        description: ReqStory
-    ): Result<ApiResponse<Any?>?> {
+        description: RequestBody
+    ): Result<FileUploadResponse?> {
         return getResult { service.addNewStoryAsGuest(file, description) }
     }
 

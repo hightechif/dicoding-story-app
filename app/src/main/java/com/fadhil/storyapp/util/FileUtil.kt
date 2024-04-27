@@ -1,6 +1,7 @@
 package com.fadhil.storyapp.util
 
 import android.content.Context
+import android.graphics.BitmapFactory
 import java.io.File
 import java.time.Instant
 
@@ -14,4 +15,10 @@ object FileUtil {
         return File.createTempFile(timeStamp, ".jpg", filesDir)
     }
 
+}
+
+fun File.reduceFileImage(): File {
+    val file = this
+    val bitmap = BitmapFactory.decodeFile(file.path)
+    return file
 }

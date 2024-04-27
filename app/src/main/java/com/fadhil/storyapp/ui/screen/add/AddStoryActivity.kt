@@ -14,6 +14,10 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.fadhil.storyapp.R
+import com.fadhil.storyapp.data.ProcessResult
+import com.fadhil.storyapp.data.ProcessResultDelegate
+import com.fadhil.storyapp.data.Result
+import com.fadhil.storyapp.data.source.remote.response.FileUploadResponse
 import com.fadhil.storyapp.databinding.ActivityAddStoryBinding
 import com.fadhil.storyapp.util.CameraUtils
 import com.google.android.material.snackbar.Snackbar
@@ -105,6 +109,25 @@ class AddStoryActivity : AppCompatActivity() {
         }
     }
 
+    private fun startCamera() {
+        currentImageUri = CameraUtils.getImageUri(this)
+        launcherIntentCamera.launch(currentImageUri)
+    }
+
+    private fun showImage() {
+        currentImageUri?.let {
+            Timber.d("Image URI: - showImage: $it")
+            Glide.with(this)
+                .load(it)
+                .placeholder(R.drawable.ic_placeholder)
+                .into(binding.previewImageView)
+        }
+    }
+
+    private fun startGallery() {
+        launcherGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    }
+
     private fun uploadStory() {
         if (currentImageUri == null) {
             Snackbar.make(
@@ -130,32 +153,39 @@ class AddStoryActivity : AppCompatActivity() {
                 0.0,
                 0.0
             ).collect {
+                processUploadResponse(it)
+            }
+        }
+    }
+
+    private fun processUploadResponse(it: Result<FileUploadResponse?>) {
+        ProcessResult(it, object : ProcessResultDelegate<FileUploadResponse?> {
+            override fun loading() {
+
+            }
+
+            override fun error(code: String?, message: String?) {
+                Timber.e("code=$code - message=$message")
+                Snackbar.make(
+                    binding.root,
+                    "Upload process failed. $message",
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
+
+            override fun unAuthorize(message: String?) {
+
+            }
+
+            override fun success(data: FileUploadResponse?) {
                 Snackbar.make(
                     binding.root,
                     "Upload process complete.",
                     Snackbar.LENGTH_SHORT
                 ).show()
             }
-        }
-    }
 
-    private fun startCamera() {
-        currentImageUri = CameraUtils.getImageUri(this)
-        launcherIntentCamera.launch(currentImageUri)
-    }
-
-    private fun showImage() {
-        currentImageUri?.let {
-            Timber.d("Image URI: - showImage: $it")
-            Glide.with(this)
-                .load(it)
-                .placeholder(R.drawable.ic_placeholder)
-                .into(binding.previewImageView)
-        }
-    }
-
-    private fun startGallery() {
-        launcherGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        })
     }
 
 }

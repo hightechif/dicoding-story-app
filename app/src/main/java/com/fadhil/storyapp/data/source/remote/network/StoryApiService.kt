@@ -2,9 +2,9 @@ package com.fadhil.storyapp.data.source.remote.network
 
 import com.fadhil.storyapp.data.source.remote.request.ReqLogin
 import com.fadhil.storyapp.data.source.remote.request.ReqRegister
-import com.fadhil.storyapp.data.source.remote.request.ReqStory
 import com.fadhil.storyapp.data.source.remote.response.ApiContentResponse
 import com.fadhil.storyapp.data.source.remote.response.ApiResponse
+import com.fadhil.storyapp.data.source.remote.response.FileUploadResponse
 import com.fadhil.storyapp.data.source.remote.response.ResLogin
 import com.fadhil.storyapp.data.source.remote.response.ResStory
 import okhttp3.MultipartBody
@@ -28,14 +28,17 @@ interface StoryApiService {
 
     @Multipart
     @POST("stories")
-    suspend fun addNewStory(@Part("photo") photo: MultipartBody.Part, @Part("description") body: ReqStory): Response<ApiResponse<Any?>?>
+    suspend fun addNewStory(
+        @Part file: MultipartBody.Part,
+        @Part("description") body: RequestBody
+    ): Response<FileUploadResponse?>
 
     @Multipart
     @POST("stories/guest")
     suspend fun addNewStoryAsGuest(
-        @Part("photo") photo: MultipartBody.Part,
-        @Part("description") description: ReqStory
-    ): Response<ApiResponse<Any?>?>
+        @Part file: MultipartBody.Part,
+        @Part("description") description: RequestBody
+    ): Response<FileUploadResponse?>
 
     @GET("stories")
     suspend fun getAllStories(
