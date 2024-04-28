@@ -18,7 +18,6 @@ import java.nio.charset.Charset
  */
 abstract class BaseRemoteDataSource {
 
-    @Suppress("INFERRED_TYPE_VARIABLE_INTO_EMPTY_INTERSECTION_WARNING")
     protected suspend fun <T> getResult(call: suspend () -> Response<T>): Result<T> {
         try {
             val response = call()
@@ -30,21 +29,19 @@ abstract class BaseRemoteDataSource {
                         if (body.isSuccess()) {
                             Result.Success(body)
                         } else {
-                            @Suppress("UNCHECKED_CAST")
-                            Result.Error(code.toString(), body.message, body.story as T?)
+                            Result.Error(code.toString(), body.message)
                         }
                     } else if (body is ApiContentResponse<*>) {
                         if (body.isSuccess()) {
                             Result.Success(body)
                         } else {
-                            @Suppress("UNCHECKED_CAST")
-                            Result.Error(code.toString(), body.message, body.listStory as T?)
+                            Result.Error(code.toString(), body.message)
                         }
                     } else {
                         Result.Success(body)
                     }
                 } else {
-                    Result.Error("BODYNULL", ErrorMessage().connection(), null)
+                    Result.Error("BODYNULL", ErrorMessage().connection())
                 }
             } else {
                 if (code == 401) {

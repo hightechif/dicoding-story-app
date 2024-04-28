@@ -19,8 +19,7 @@ abstract class NetworkBoundProcessResource<ResultType, RequestType> {
                 emit(
                     Result.Error(
                         response.code,
-                        response.message,
-                        onResponseError(response.data)
+                        response.message
                     )
                 )
             }

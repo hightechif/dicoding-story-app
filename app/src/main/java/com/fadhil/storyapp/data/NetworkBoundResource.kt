@@ -22,11 +22,18 @@ abstract class NetworkBoundResource<ResultType, RequestType> {
                             }
                         )
                     } else {
-                        Result.Error(
-                            response.code,
-                            response.message,
-                            loadFromDB()
-                        )
+                        if (dbSource != null) {
+                            emit(
+                                Result.Success(dbSource)
+                            )
+                        } else {
+                            emit(
+                                Result.Error(
+                                    response.code,
+                                    response.message
+                                )
+                            )
+                        }
                     }
                 }
 
@@ -36,22 +43,23 @@ abstract class NetworkBoundResource<ResultType, RequestType> {
 
                 Result.Status.LOADING -> {}
                 else -> {
-                    emitAll(
-                        loadFromDB().map {
+                    if (dbSource != null) {
+                        emit(
+                            Result.Success(dbSource)
+                        )
+                    } else {
+                        emit(
                             Result.Error(
                                 response.code,
-                                response.message,
-                                it
+                                response.message
                             )
-                        }
-                    )
+                        )
+                    }
                 }
             }
         } else {
-            emitAll(
-                loadFromDB().map {
-                    Result.Success(it)
-                }
+            emit(
+                Result.Success(dbSource)
             )
         }
     }

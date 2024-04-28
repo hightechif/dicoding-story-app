@@ -19,7 +19,7 @@ sealed class Result<out T>(val data: T? = null, val code: String? = null, val me
         override var status: Status = Status.UNAUTHORIZED
     }
 
-    class Error<T>(code: String?, message: String?, data: T? = null) : Result<T>(data, code, message) {
+    class Error<T>(code: String?, message: String?) : Result<T>(null, code, message) {
         override var status: Status = Status.ERROR
     }
 
