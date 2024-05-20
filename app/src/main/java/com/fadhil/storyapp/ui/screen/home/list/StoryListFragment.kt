@@ -19,6 +19,7 @@ import com.fadhil.storyapp.domain.model.Story
 import com.fadhil.storyapp.ui.screen.add.AddStoryActivity
 import com.fadhil.storyapp.ui.screen.home.list.adapter.StoryAdapter
 import com.fadhil.storyapp.ui.screen.home.list.adapter.StoryDelegate
+import com.fadhil.storyapp.ui.screen.maps.StoryMapsActivity
 import com.fadhil.storyapp.util.MarginItemDecoration
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -83,6 +84,10 @@ class StoryListFragment : Fragment() {
 
         binding.fabAdd.setOnClickListener {
             AddStoryActivity.open(requireActivity(), resultLauncher)
+        }
+
+        binding.fabMap.setOnClickListener {
+            StoryMapsActivity.open(requireActivity())
         }
     }
 
