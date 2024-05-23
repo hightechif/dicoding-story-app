@@ -147,4 +147,6 @@ dependencies {
     implementation("de.hdodenhof:circleimageview:${versions["circleimageview_version"]}")
     implementation("com.github.bumptech.glide:glide:${versions["glide_version"]}")
     implementation("id.zelory:compressor:${versions["compressor_version"]}")
+    implementation(libs.androidx.paging.runtime.ktx)
+
 }

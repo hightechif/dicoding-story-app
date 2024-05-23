@@ -1,0 +1,7 @@
+[versions]
+pagingRuntimeKtx = "3.1.0"
+
+[libraries]
+androidx-paging-runtime-ktx = { module = "androidx.paging:paging-runtime-ktx", version.ref = "pagingRuntimeKtx" }
+
+[plugins]
