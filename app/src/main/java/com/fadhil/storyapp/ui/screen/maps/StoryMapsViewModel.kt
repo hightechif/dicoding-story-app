@@ -1,4 +1,4 @@
-package com.fadhil.storyapp.ui.screen.home.list
+package com.fadhil.storyapp.ui.screen.maps
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,7 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class StoryListViewModel @Inject constructor(
+class StoryMapsViewModel @Inject constructor(
     private val useCase: StoryUseCase
 ) : ViewModel() {
 

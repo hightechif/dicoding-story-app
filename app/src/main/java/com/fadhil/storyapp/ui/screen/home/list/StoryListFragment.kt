@@ -39,7 +39,7 @@ class StoryListFragment : Fragment() {
                     "Upload process complete.",
                     Snackbar.LENGTH_SHORT
                 ).show()
-                loadData()
+                initData()
             }
         }
 
@@ -55,7 +55,8 @@ class StoryListFragment : Fragment() {
 
         setupView()
         setupListener()
-        loadData()
+        setupObserver()
+        initData()
     }
 
     private fun setupView() {
@@ -91,7 +92,11 @@ class StoryListFragment : Fragment() {
         }
     }
 
-    private fun loadData() {
+    private fun setupObserver() {
+
+    }
+
+    private fun initData() {
         getAllStories()
     }
 
