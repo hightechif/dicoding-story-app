@@ -101,30 +101,40 @@ class StoryListFragment : Fragment() {
     }
 
     private fun getAllStories() {
-        viewModel.getAllStories(true)
-            .observe(viewLifecycleOwner) {
-                ProcessResult(it, object : ProcessResultDelegate<List<Story>?> {
-                    override fun loading() {
-                        showLoadIndicator()
-                    }
+        viewModel.getAllStories(true).observe(viewLifecycleOwner) {
+            ProcessResult(it, object : ProcessResultDelegate<List<Story>?> {
+                override fun loading() {
+                    showLoadIndicator()
+                }
 
-                    override fun error(code: String?, message: String?) {
-                        hideLoadIndicator()
-                    }
+                override fun error(code: String?, message: String?) {
+                    hideLoadIndicator()
+                }
 
-                    override fun unAuthorize(message: String?) {
-                        hideLoadIndicator()
-                    }
+                override fun unAuthorize(message: String?) {
+                    hideLoadIndicator()
+                }
 
-                    override fun success(data: List<Story>?) {
-                        hideLoadIndicator()
-                        if (data?.isNotEmpty() == true) {
-                            mStoryAdapter.setData(data)
-                        }
+                override fun success(data: List<Story>?) {
+                    hideLoadIndicator()
+                    if (data?.isNotEmpty() == true) {
+                        mStoryAdapter.setData(data)
                     }
+                }
 
-                })
+            })
+        }
+    }
+
+    private fun getPagingStory() {
+        viewModel.getPagingStory(true).observe(viewLifecycleOwner) {
+            hideLoadIndicator()
+            /*
+            if (data?.isNotEmpty() == true) {
+                mStoryAdapter.setData(data)
             }
+            */
+        }
     }
 
     private fun showLoadIndicator() {

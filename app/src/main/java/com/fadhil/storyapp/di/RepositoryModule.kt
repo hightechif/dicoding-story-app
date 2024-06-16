@@ -4,10 +4,13 @@ import android.content.SharedPreferences
 import com.fadhil.storyapp.data.source.AuthRepository
 import com.fadhil.storyapp.data.source.ConfigurationRepository
 import com.fadhil.storyapp.data.source.SettingRepository
+import com.fadhil.storyapp.data.source.StoryPagingSource
+import com.fadhil.storyapp.data.source.StoryRemoteMediator
 import com.fadhil.storyapp.data.source.StoryRepository
 import com.fadhil.storyapp.data.source.local.ConfigurationLocalDataSource
 import com.fadhil.storyapp.data.source.local.SettingLocalDataSource
 import com.fadhil.storyapp.data.source.local.StoryLocalDataSource
+import com.fadhil.storyapp.data.source.local.db.AppDatabase
 import com.fadhil.storyapp.data.source.local.db.StoryDao
 import com.fadhil.storyapp.data.source.local.prefs.ConfigurationLocalSource
 import com.fadhil.storyapp.data.source.local.prefs.HttpHeaderLocalSource
@@ -43,6 +46,13 @@ object RepositoryModule {
 
     @Singleton
     @Provides
+    fun provideStoryRemoteMediator(
+        database: AppDatabase,
+        apiService: StoryApiService
+    ) = StoryRemoteMediator(database, apiService)
+
+    @Singleton
+    @Provides
     fun provideConfigurationLocalSource(
         sharedPreferences: SharedPreferences
     ) = ConfigurationLocalSource(sharedPreferences)
@@ -68,6 +78,12 @@ object RepositoryModule {
 
     @Singleton
     @Provides
+    fun provideStoryPagingSource(
+        storyRemoteDataSource: StoryRemoteDataSource
+    ) = StoryPagingSource(storyRemoteDataSource)
+
+    @Singleton
+    @Provides
     fun provideConfigurationRepository(
         configurationLocalDataSource: ConfigurationLocalDataSource
     ) = ConfigurationRepository(configurationLocalDataSource)
@@ -89,8 +105,15 @@ object RepositoryModule {
     @Provides
     fun provideStoryRepository(
         storyRemoteDataSource: StoryRemoteDataSource,
-        storyLocalDataSource: StoryLocalDataSource
-    ) = StoryRepository(storyRemoteDataSource, storyLocalDataSource)
+        storyLocalDataSource: StoryLocalDataSource,
+        storyRemoteMediator: StoryRemoteMediator,
+        storyPagingSource: StoryPagingSource
+    ) = StoryRepository(
+        storyRemoteDataSource,
+        storyLocalDataSource,
+        storyRemoteMediator,
+        storyPagingSource
+    )
 
     @Singleton
     @Provides

@@ -2,10 +2,7 @@ package com.fadhil.storyapp.domain.usecase
 
 import android.content.Context
 import android.net.Uri
-import com.fadhil.storyapp.data.Result
 import com.fadhil.storyapp.data.source.StoryRepository
-import com.fadhil.storyapp.domain.model.Story
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class StoryUseCase @Inject constructor(
@@ -17,11 +14,16 @@ class StoryUseCase @Inject constructor(
         size: Int?,
         location: Int?,
         reload: Boolean
-    ): Flow<Result<List<Story>>> =
-        repository.getAllStories(page, size, location, reload)
+    ) = repository.getAllStories(page, size, location, reload)
 
-    override fun getStoryDetail(id: String, reload: Boolean): Flow<Result<Story?>> =
-        repository.getStoryDetail(id, reload)
+    override fun getPagingStory(
+        page: Int?,
+        size: Int?,
+        location: Int?,
+        reload: Boolean
+    ) = repository.getPagingStory(page, size, location, reload)
+
+    override fun getStoryDetail(id: String, reload: Boolean) = repository.getStoryDetail(id, reload)
 
     override fun addNewStory(
         context: Context,

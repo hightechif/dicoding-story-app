@@ -23,4 +23,7 @@ class StoryListViewModel @Inject constructor(
     fun getAllStories(reload: Boolean) =
         useCase.getAllStory(page.value, size.value, location.value, reload).asLiveData()
 
+    fun getPagingStory(reload: Boolean) =
+        useCase.getPagingStory(page.value, size.value, location.value, reload).asLiveData()
+
 }

@@ -2,6 +2,7 @@ package com.fadhil.storyapp.data.source.remote.response
 
 import com.fadhil.storyapp.util.DateTimeUtil
 import com.google.gson.annotations.SerializedName
+import java.time.LocalDateTime
 
 data class ResStory(
     @field:SerializedName("id")
@@ -20,7 +21,8 @@ data class ResStory(
     val lon: Double?
 ) {
 
+    fun getCreatedDate(): LocalDateTime = DateTimeUtil.getUTCLocalDate(createdAt)
     fun getCreatedTime(): Long =
-        DateTimeUtil.getUTCLocalDate(createdAt).toInstant(DateTimeUtil.zoneOffsetUTC).toEpochMilli()
+        getCreatedDate().toInstant(DateTimeUtil.zoneOffsetUTC).toEpochMilli()
 
 }

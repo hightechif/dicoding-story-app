@@ -2,6 +2,12 @@ package com.fadhil.storyapp.data.source
 
 import android.content.Context
 import android.net.Uri
+import androidx.lifecycle.asFlow
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.liveData
 import com.fadhil.storyapp.data.NetworkBoundProcessResource
 import com.fadhil.storyapp.data.NetworkBoundResource
 import com.fadhil.storyapp.data.Result
@@ -34,7 +40,9 @@ import javax.inject.Inject
 
 class StoryRepository @Inject constructor(
     private val remoteDataSource: StoryRemoteDataSource,
-    private val localDataSource: StoryLocalDataSource
+    private val localDataSource: StoryLocalDataSource,
+    private val storyRemoteMediator: StoryRemoteMediator,
+    private val storyPagingSource: StoryPagingSource
 ) : IStoryRepository {
 
     private val mapper = Mappers.getMapper(StoryMapper::class.java)
@@ -117,10 +125,9 @@ class StoryRepository @Inject constructor(
             override suspend fun saveCallResult(data: ApiContentResponse<List<ResStory>>?) {
                 coroutineScope {
                     launch(Dispatchers.IO) {
-                        data?.listStory?.forEach { story ->
-                            val storyEntity = mapper.mapStoryResponseToEntity(story)
-                            localDataSource.insertStory(storyEntity)
-                        }
+                        val stories =
+                            mapper.mapStoryResponseToEntityList(data?.listStory ?: emptyList())
+                        localDataSource.insertStory(stories)
                     }
                 }
             }
@@ -128,6 +135,25 @@ class StoryRepository @Inject constructor(
             override fun shouldFetch(data: List<Story>?) = data?.isNotEmpty() != true || reload
 
         }.asFlow()
+
+    @OptIn(ExperimentalPagingApi::class)
+    fun getPagingStory(
+        page: Int?,
+        size: Int?,
+        location: Int?,
+        reload: Boolean
+    ): Flow<PagingData<Story>> {
+        val pagingSourceFactory = { storyPagingSource }
+        val pager = Pager(
+            config = PagingConfig(
+                pageSize = 5,
+                enablePlaceholders = false
+            ),
+            remoteMediator = storyRemoteMediator,
+            pagingSourceFactory = pagingSourceFactory
+        )
+        return pager.liveData.asFlow()
+    }
 
     override fun getStoryDetail(id: String, reload: Boolean): Flow<Result<Story?>> =
         object : NetworkBoundResource<Story?, ApiResponse<ResStory>?>() {
