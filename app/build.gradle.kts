@@ -41,6 +41,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+        freeCompilerArgs = freeCompilerArgs.plus(arrayOf("-Xopt-in=kotlin.RequiresOptIn"))
     }
 }
 
@@ -78,7 +79,7 @@ val versions by rootProject.extra(
         "dagger_version" to "2.44",
 
         /** map struct */
-        "mapstruct_kotlin_version" to  "1.4.0.0",
+        "mapstruct_kotlin_version" to "1.4.0.0",
         "maps_struct_version" to "1.5.3.Final",
 
         /** supporting lib */
