@@ -125,6 +125,8 @@ dependencies {
     kapt("androidx.room:room-compiler:${versions["room_version"]}")
     implementation("androidx.room:room-ktx:${versions["room_version"]}")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.room:room-paging:${versions["room_version"]}")
+
 
     /** networking */
     implementation("com.google.code.gson:gson:${versions["gson_version"]}")
