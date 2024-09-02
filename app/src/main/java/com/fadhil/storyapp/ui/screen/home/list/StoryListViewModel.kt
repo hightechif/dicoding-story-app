@@ -4,8 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
+import androidx.paging.map
 import com.fadhil.storyapp.domain.usecase.StoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,7 +27,10 @@ class StoryListViewModel @Inject constructor(
     fun getAllStories(reload: Boolean) =
         useCase.getAllStory(page.value, size.value, location.value, reload).asLiveData()
 
-    fun getPagingStory(reload: Boolean) =
-        useCase.getPagingStory(page.value, size.value, location.value, reload).asLiveData()
+    val storiesPagingFlow = useCase.getPagingStory(page.value, size.value, location.value, true)
+        .map { pagingData ->
+            pagingData.map { it }
+        }
+        .cachedIn(viewModelScope)
 
 }

@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.fadhil.storyapp.R
@@ -17,19 +18,24 @@ import com.fadhil.storyapp.data.ProcessResultDelegate
 import com.fadhil.storyapp.databinding.FragmentStoryListBinding
 import com.fadhil.storyapp.domain.model.Story
 import com.fadhil.storyapp.ui.screen.add.AddStoryActivity
+import com.fadhil.storyapp.ui.screen.home.list.adapter.PagingStoryAdapter
 import com.fadhil.storyapp.ui.screen.home.list.adapter.StoryAdapter
+import com.fadhil.storyapp.ui.screen.home.list.adapter.StoryComparator
 import com.fadhil.storyapp.ui.screen.home.list.adapter.StoryDelegate
 import com.fadhil.storyapp.ui.screen.maps.StoryMapsActivity
 import com.fadhil.storyapp.util.MarginItemDecoration
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class StoryListFragment : Fragment() {
 
     private lateinit var binding: FragmentStoryListBinding
     private val viewModel: StoryListViewModel by viewModels()
-    private val mStoryAdapter: StoryAdapter = StoryAdapter()
+    private val mStoryAdapter = StoryAdapter()
+    private val mStoryPagingAdapter = PagingStoryAdapter(StoryComparator)
 
     private val resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -67,7 +73,7 @@ class StoryListFragment : Fragment() {
                 addItemDecoration(
                     MarginItemDecoration(resources.getDimension(R.dimen.dimen_4dp).toInt())
                 )
-                adapter = mStoryAdapter
+                adapter = mStoryPagingAdapter
             }
         }
     }
@@ -97,7 +103,8 @@ class StoryListFragment : Fragment() {
     }
 
     private fun initData() {
-        getAllStories()
+        // getAllStories()
+        getPagingStory()
     }
 
     private fun getAllStories() {
@@ -127,13 +134,12 @@ class StoryListFragment : Fragment() {
     }
 
     private fun getPagingStory() {
-        viewModel.getPagingStory(true).observe(viewLifecycleOwner) {
-            hideLoadIndicator()
-            /*
-            if (data?.isNotEmpty() == true) {
-                mStoryAdapter.setData(data)
+        // Activities can use lifecycleScope directly; fragments use
+        // viewLifecycleOwner.lifecycleScope.
+        lifecycleScope.launch {
+            viewModel.storiesPagingFlow.collectLatest { pagingData ->
+                mStoryPagingAdapter.submitData(pagingData)
             }
-            */
         }
     }
 
