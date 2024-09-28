@@ -2,6 +2,7 @@ package com.fadhil.storyapp.domain.repository
 
 import android.content.Context
 import android.net.Uri
+import androidx.lifecycle.LiveData
 import androidx.paging.PagingData
 import com.fadhil.storyapp.data.Result
 import com.fadhil.storyapp.data.source.remote.response.FileUploadResponse
@@ -38,7 +39,7 @@ interface IStoryRepository {
         size: Int?,
         location: Int?,
         reload: Boolean
-    ): Flow<PagingData<Story>>
+    ): LiveData<PagingData<Story>>
 
     fun getStoryDetail(id: String, reload: Boolean): Flow<Result<Story?>>
 

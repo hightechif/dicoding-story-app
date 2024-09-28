@@ -2,6 +2,7 @@ package com.fadhil.storyapp.data.source
 
 import android.content.Context
 import android.net.Uri
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.asFlow
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
@@ -142,7 +143,7 @@ class StoryRepository @Inject constructor(
         size: Int?,
         location: Int?,
         reload: Boolean
-    ): Flow<PagingData<Story>> {
+    ): LiveData<PagingData<Story>> {
         val pagingSourceFactory = { storyPagingSource }
         val pager = Pager(
             config = PagingConfig(
@@ -153,7 +154,7 @@ class StoryRepository @Inject constructor(
             pagingSourceFactory = pagingSourceFactory
         )
 
-        return pager.liveData.asFlow()
+        return pager.liveData
     }
 
     override fun getStoryDetail(id: String, reload: Boolean): Flow<Result<Story?>> =

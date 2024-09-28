@@ -2,6 +2,7 @@ package com.fadhil.storyapp.domain.usecase
 
 import android.content.Context
 import android.net.Uri
+import androidx.lifecycle.LiveData
 import androidx.paging.Pager
 import androidx.paging.PagingData
 import com.fadhil.storyapp.data.Result
@@ -23,7 +24,7 @@ interface IStoryUseCase {
         size: Int?,
         location: Int?,
         reload: Boolean
-    ): Flow<PagingData<Story>>
+    ): LiveData<PagingData<Story>>
 
     fun getStoryDetail(id: String, reload: Boolean): Flow<Result<Story?>>
 

@@ -12,9 +12,9 @@ class StoryListViewModel @Inject constructor(
     private val storyUseCase: IStoryUseCase
 ) : ViewModel() {
 
-    private val page = MutableLiveData<Int>()
-    private val size = MutableLiveData<Int>()
-    private val location = MutableLiveData<Int>()
+    val page = MutableLiveData<Int>()
+    val size = MutableLiveData<Int>()
+    val location = MutableLiveData<Int>()
 
     fun setPage(input: Int) {
         page.value = input
@@ -32,6 +32,6 @@ class StoryListViewModel @Inject constructor(
         storyUseCase.getAllStory(page.value, size.value, location.value, reload).asLiveData()
 
     fun getStoriesPagingFlow() =
-        storyUseCase.getPagingStory(page.value, size.value, location.value, true).asLiveData()
+        storyUseCase.getPagingStory(page.value, size.value, location.value, true)
 
 }
