@@ -2,11 +2,12 @@ package com.fadhil.storyapp.domain.usecase
 
 import android.content.Context
 import android.net.Uri
-import com.fadhil.storyapp.data.source.StoryRepository
+import com.fadhil.storyapp.domain.repository.IStoryRepository
 import javax.inject.Inject
 
+
 class StoryUseCase @Inject constructor(
-    private val repository: StoryRepository
+    private val storyRepository: IStoryRepository
 ) : IStoryUseCase {
 
     override fun getAllStory(
@@ -14,16 +15,17 @@ class StoryUseCase @Inject constructor(
         size: Int?,
         location: Int?,
         reload: Boolean
-    ) = repository.getAllStories(page, size, location, reload)
+    ) = storyRepository.getAllStories(page, size, location, reload)
 
     override fun getPagingStory(
         page: Int?,
         size: Int?,
         location: Int?,
         reload: Boolean
-    ) = repository.getPagingStory(page, size, location, reload)
+    ) = storyRepository.getPagingStory(page, size, location, reload)
 
-    override fun getStoryDetail(id: String, reload: Boolean) = repository.getStoryDetail(id, reload)
+    override fun getStoryDetail(id: String, reload: Boolean) =
+        storyRepository.getStoryDetail(id, reload)
 
     override fun addNewStory(
         context: Context,
@@ -31,6 +33,14 @@ class StoryUseCase @Inject constructor(
         uri: Uri,
         lat: Double?,
         lon: Double?
-    ) = repository.addNewStory(context, description, uri, lat, lon)
+    ) = storyRepository.addNewStory(context, description, uri, lat, lon)
 
+    companion object {
+        @Volatile
+        private var instance: IStoryUseCase? = null
+        fun getInstance(storyRepository: IStoryRepository): IStoryUseCase =
+            instance ?: synchronized(this) {
+                instance ?: StoryUseCase(storyRepository)
+            }.also { instance = it }
+    }
 }

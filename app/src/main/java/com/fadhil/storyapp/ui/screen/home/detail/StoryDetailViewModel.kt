@@ -4,13 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
-import com.fadhil.storyapp.domain.usecase.StoryUseCase
+import com.fadhil.storyapp.domain.usecase.IStoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class StoryDetailViewModel @Inject constructor(
-    private val useCase: StoryUseCase
+    private val storyUseCase: IStoryUseCase
 ) : ViewModel() {
 
     private val _storyId = MutableLiveData<String>()
@@ -34,6 +34,7 @@ class StoryDetailViewModel @Inject constructor(
         _isFavorite.postValue(input)
     }
 
-    fun getStoryDetail(storyId: String, reload: Boolean) = useCase.getStoryDetail(storyId, reload).asLiveData()
+    fun getStoryDetail(storyId: String, reload: Boolean) =
+        storyUseCase.getStoryDetail(storyId, reload).asLiveData()
 
 }

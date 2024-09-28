@@ -18,10 +18,6 @@ import com.fadhil.storyapp.data.source.local.prefs.SettingPreferences
 import com.fadhil.storyapp.data.source.remote.AuthRemoteDataSource
 import com.fadhil.storyapp.data.source.remote.StoryRemoteDataSource
 import com.fadhil.storyapp.data.source.remote.network.StoryApiService
-import com.fadhil.storyapp.domain.usecase.AuthUseCase
-import com.fadhil.storyapp.domain.usecase.ConfigurationUseCase
-import com.fadhil.storyapp.domain.usecase.SettingUseCase
-import com.fadhil.storyapp.domain.usecase.StoryUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -101,42 +97,17 @@ object RepositoryModule {
         configurationLocalDataSource: ConfigurationLocalDataSource
     ) = AuthRepository(authRemoteDataSource, configurationLocalDataSource)
 
-    @Singleton
     @Provides
     fun provideStoryRepository(
         storyRemoteDataSource: StoryRemoteDataSource,
         storyLocalDataSource: StoryLocalDataSource,
         storyRemoteMediator: StoryRemoteMediator,
         storyPagingSource: StoryPagingSource
-    ) = StoryRepository(
+    ) = StoryRepository.getInstance(
         storyRemoteDataSource,
         storyLocalDataSource,
         storyRemoteMediator,
         storyPagingSource
     )
-
-    @Singleton
-    @Provides
-    fun provideConfigurationUseCase(
-        configurationRepository: ConfigurationRepository
-    ) = ConfigurationUseCase(configurationRepository)
-
-    @Singleton
-    @Provides
-    fun provideSettingUseCase(
-        settingRepository: SettingRepository
-    ) = SettingUseCase(settingRepository)
-
-    @Singleton
-    @Provides
-    fun provideAuthUseCase(
-        authRepository: AuthRepository
-    ) = AuthUseCase(authRepository)
-
-    @Singleton
-    @Provides
-    fun provideStoryUseCase(
-        storyRepository: StoryRepository
-    ) = StoryUseCase(storyRepository)
 
 }

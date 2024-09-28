@@ -5,13 +5,13 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.fadhil.storyapp.domain.usecase.StoryUseCase
+import com.fadhil.storyapp.domain.usecase.IStoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class AddStoryViewModel @Inject constructor(
-    private val useCase: StoryUseCase
+    private val storyUseCase: IStoryUseCase
 ) : ViewModel() {
 
     private val _description: MutableLiveData<String> =
@@ -28,6 +28,6 @@ class AddStoryViewModel @Inject constructor(
         uri: Uri,
         lat: Double?,
         lon: Double?
-    ) = useCase.addNewStory(context, description, uri, lat, lon)
+    ) = storyUseCase.addNewStory(context, description, uri, lat, lon)
 
 }

@@ -103,6 +103,9 @@ class StoryListFragment : Fragment() {
     }
 
     private fun initData() {
+        viewModel.setPage(0)
+        viewModel.setSize(10)
+        viewModel.setLocation(1)
         // getAllStories()
         getPagingStory()
     }
@@ -136,8 +139,8 @@ class StoryListFragment : Fragment() {
     private fun getPagingStory() {
         // Activities can use lifecycleScope directly; fragments use
         // viewLifecycleOwner.lifecycleScope.
-        lifecycleScope.launch {
-            viewModel.storiesPagingFlow.collectLatest { pagingData ->
+        viewModel.getStoriesPagingFlow().observe(viewLifecycleOwner) { pagingData ->
+            lifecycleScope.launch {
                 mStoryPagingAdapter.submitData(pagingData)
             }
         }

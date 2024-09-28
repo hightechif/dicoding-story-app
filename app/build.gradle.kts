@@ -58,7 +58,7 @@ val versions by rootProject.extra(
         "material_version" to "1.9.0",
 
         /** testing */
-        "junit_version" to "4.13.2",
+        "junit_version" to "5.7.2",
         "junit_ext_version" to "1.1.3",
         "espresso_core_version" to "3.4.0",
 
@@ -111,8 +111,15 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:18.2.0")
 
     /** testing */
-    testImplementation("junit:junit:${versions["junit_version"]}")
-    androidTestImplementation("androidx.test.ext:junit:${versions["junit_ext_version"]}")
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    //mockito
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.inline)
+    //special testing
+    testImplementation(libs.androidx.core.testing) // InstantTaskExecutorRule
+    testImplementation(libs.kotlinx.coroutines.test) //TestCoroutineDispatcher
 
     /** coroutines */
     androidTestImplementation("androidx.test.espresso:espresso-core:${versions["espresso_core_version"]}")

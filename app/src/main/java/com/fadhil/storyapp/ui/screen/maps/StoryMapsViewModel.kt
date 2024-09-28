@@ -4,13 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
-import com.fadhil.storyapp.domain.usecase.StoryUseCase
+import com.fadhil.storyapp.domain.usecase.IStoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class StoryMapsViewModel @Inject constructor(
-    private val useCase: StoryUseCase
+    private val storyUseCase: IStoryUseCase
 ) : ViewModel() {
 
     private val _page = MutableLiveData<Int>().apply { postValue(0) }
@@ -21,6 +21,6 @@ class StoryMapsViewModel @Inject constructor(
     val location: LiveData<Int> = _location
 
     fun getAllStories(reload: Boolean) =
-        useCase.getAllStory(page.value, size.value, location.value, reload).asLiveData()
+        storyUseCase.getAllStory(page.value, size.value, location.value, reload).asLiveData()
 
 }

@@ -137,7 +137,7 @@ class StoryRepository @Inject constructor(
         }.asFlow()
 
     @OptIn(ExperimentalPagingApi::class)
-    fun getPagingStory(
+    override fun getPagingStory(
         page: Int?,
         size: Int?,
         location: Int?,
@@ -187,6 +187,25 @@ class StoryRepository @Inject constructor(
         outputStream.close()
         inputStream.close()
         return myFile
+    }
+
+    companion object {
+        @Volatile
+        private var instance: IStoryRepository? = null
+        fun getInstance(
+            remoteDataSource: StoryRemoteDataSource,
+            localDataSource: StoryLocalDataSource,
+            storyRemoteMediator: StoryRemoteMediator,
+            storyPagingSource: StoryPagingSource
+        ): IStoryRepository =
+            instance ?: synchronized(this) {
+                instance ?: StoryRepository(
+                    remoteDataSource,
+                    localDataSource,
+                    storyRemoteMediator,
+                    storyPagingSource
+                )
+            }.also { instance = it }
     }
 
 }
