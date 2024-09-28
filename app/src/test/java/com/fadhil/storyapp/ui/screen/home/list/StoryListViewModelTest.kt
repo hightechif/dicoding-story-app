@@ -2,13 +2,20 @@ package com.fadhil.storyapp.ui.screen.home.list
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import androidx.paging.AsyncPagingDataDiffer
 import androidx.paging.PagingData
-import com.dicoding.newsapp.utils.MainDispatcherRule
-import com.dicoding.newsapp.utils.getOrAwaitValue
+import androidx.recyclerview.widget.ListUpdateCallback
 import com.fadhil.storyapp.domain.model.Story
 import com.fadhil.storyapp.domain.usecase.IStoryUseCase
+import com.fadhil.storyapp.ui.screen.home.list.adapter.PagingStoryAdapter
+import com.fadhil.storyapp.ui.screen.home.list.adapter.StoryComparator
 import com.fadhil.storyapp.util.DataDummy
+import com.fadhil.storyapp.utils.MainDispatcherRule
+import com.fadhil.storyapp.utils.getOrAwaitValue
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Before
@@ -27,29 +34,83 @@ class StoryListViewModelTest {
 
     @Mock
     private lateinit var storyUseCase: IStoryUseCase
-    private lateinit var storyListViewModel: StoryListViewModel
-    private val dummyEmptyPagedStory = DataDummy.generateDummyEmptyPagedStory()
+    private lateinit var viewModel: StoryListViewModel
+    private val dummyValidPagedStory = DataDummy.generateDummyValidStory()
+    private val dummyEmptyPagedStory = DataDummy.generateDummyEmptyStory()
+    private val updateCallback = object : ListUpdateCallback {
+        override fun onInserted(position: Int, count: Int) {
+
+        }
+
+        override fun onRemoved(position: Int, count: Int) {
+
+        }
+
+        override fun onMoved(fromPosition: Int, toPosition: Int) {
+
+        }
+
+        override fun onChanged(position: Int, count: Int, payload: Any?) {
+
+        }
+
+    }
 
     @Before
     fun setup() {
-        storyListViewModel = StoryListViewModel(storyUseCase)
-        storyListViewModel.setPage(0)
-        storyListViewModel.setSize(0)
-        storyListViewModel.setLocation(1)
+        viewModel = StoryListViewModel(storyUseCase)
+        viewModel.setPage(0)
+        viewModel.setSize(10)
+        viewModel.setLocation(1)
     }
 
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
     @Test
-    fun `when get story is empty`() = runTest {
+    fun `get valid paging data story`() = runTest {
         val expectedPagingData = MutableLiveData<PagingData<Story>>()
-        expectedPagingData.value = PagingData.empty()
-        `when`(storyUseCase.getPagingStory(0, 0, 1, true))
-            .thenReturn(expectedPagingData)
-        val actualStories = storyListViewModel.getStoriesPagingFlow().getOrAwaitValue()
-        Assert.assertNotNull(actualStories)
-        Assert.assertEquals(dummyEmptyPagedStory, actualStories)
+        expectedPagingData.value = PagingData.from(dummyValidPagedStory)
+        `when`(
+            storyUseCase.getPagingStory(
+                viewModel.page.value,
+                viewModel.size.value,
+                viewModel.location.value,
+                true
+            )
+        ).thenReturn(expectedPagingData)
+        val pagedStoryResponse = viewModel.getStoriesPaging().getOrAwaitValue()
+        val asyncPagingDataDiffer = AsyncPagingDataDiffer(
+            diffCallback = StoryComparator,
+            updateCallback = updateCallback
+        )
+        asyncPagingDataDiffer.submitData(pagedStoryResponse)
+        Assert.assertNotNull(pagedStoryResponse)
+        Assert.assertEquals(dummyValidPagedStory.size, asyncPagingDataDiffer.snapshot().size)
+        Assert.assertEquals(dummyValidPagedStory.first(), asyncPagingDataDiffer.snapshot().items.first())
+    }
+
+    @Test
+    fun `get story is empty when size is 0`() = runTest {
+        viewModel.setSize(0)
+        val expectedPagingData = MutableLiveData<PagingData<Story>>()
+        expectedPagingData.value = PagingData.from(dummyEmptyPagedStory)
+        `when`(
+            storyUseCase.getPagingStory(
+                viewModel.page.value,
+                viewModel.size.value,
+                viewModel.location.value,
+                true
+            )
+        ).thenReturn(expectedPagingData)
+        val pagedStoryResponse = viewModel.getStoriesPaging().getOrAwaitValue()
+        val asyncPagingDataDiffer = AsyncPagingDataDiffer(
+            diffCallback = StoryComparator,
+            updateCallback = updateCallback
+        )
+        asyncPagingDataDiffer.submitData(pagedStoryResponse)
+        Assert.assertNotNull(pagedStoryResponse)
+        Assert.assertEquals(dummyEmptyPagedStory.size, asyncPagingDataDiffer.snapshot().size)
     }
 
 }
