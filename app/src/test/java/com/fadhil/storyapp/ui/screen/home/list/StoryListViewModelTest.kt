@@ -2,20 +2,16 @@ package com.fadhil.storyapp.ui.screen.home.list
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.paging.AsyncPagingDataDiffer
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.ListUpdateCallback
 import com.fadhil.storyapp.domain.model.Story
 import com.fadhil.storyapp.domain.usecase.IStoryUseCase
-import com.fadhil.storyapp.ui.screen.home.list.adapter.PagingStoryAdapter
 import com.fadhil.storyapp.ui.screen.home.list.adapter.StoryComparator
 import com.fadhil.storyapp.util.DataDummy
 import com.fadhil.storyapp.utils.MainDispatcherRule
 import com.fadhil.storyapp.utils.getOrAwaitValue
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Before
@@ -87,7 +83,10 @@ class StoryListViewModelTest {
         asyncPagingDataDiffer.submitData(pagedStoryResponse)
         Assert.assertNotNull(pagedStoryResponse)
         Assert.assertEquals(dummyValidPagedStory.size, asyncPagingDataDiffer.snapshot().size)
-        Assert.assertEquals(dummyValidPagedStory.first(), asyncPagingDataDiffer.snapshot().items.first())
+        Assert.assertEquals(
+            dummyValidPagedStory.first(),
+            asyncPagingDataDiffer.snapshot().items.first()
+        )
     }
 
     @Test
