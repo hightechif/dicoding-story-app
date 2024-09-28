@@ -1,4 +1,4 @@
-package com.dicoding.newsapp.utils
+package com.fadhil.storyapp.utils
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
