@@ -41,6 +41,6 @@ interface IStoryRepository {
         reload: Boolean
     ): LiveData<PagingData<Story>>
 
-    fun getStoryDetail(id: String, reload: Boolean): Flow<Result<Story?>>
+    fun getStoryDetail(id: String): Flow<Result<Story?>>
 
 }

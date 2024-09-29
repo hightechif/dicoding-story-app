@@ -34,7 +34,7 @@ class StoryDetailViewModel @Inject constructor(
         _isFavorite.postValue(input)
     }
 
-    fun getStoryDetail(storyId: String, reload: Boolean) =
-        storyUseCase.getStoryDetail(storyId, reload).asLiveData()
+    fun getStoryDetail(storyId: String) =
+        storyUseCase.getStoryDetail(storyId).asLiveData()
 
 }

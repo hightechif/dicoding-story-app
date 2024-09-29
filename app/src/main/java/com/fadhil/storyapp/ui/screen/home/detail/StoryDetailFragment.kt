@@ -77,7 +77,7 @@ class StoryDetailFragment : Fragment() {
     }
 
     private fun getStoryDetail(storyId: String) {
-        viewModel.getStoryDetail(storyId, true).observe(viewLifecycleOwner) {
+        viewModel.getStoryDetail(storyId).observe(viewLifecycleOwner) {
             ProcessResult(it, object : ProcessResultDelegate<Story?> {
                 override fun loading() {
                     showLoadIndicator()

@@ -3,7 +3,6 @@ package com.fadhil.storyapp.data.source
 import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.asFlow
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -94,7 +93,7 @@ class StoryRepository @Inject constructor(
             }
         }.asFlow()
 
-    private suspend fun createPart(
+    private fun createPart(
         imageName: String,
         imageFile: File
     ): MultipartBody.Part {
@@ -157,23 +156,16 @@ class StoryRepository @Inject constructor(
         return pager.liveData
     }
 
-    override fun getStoryDetail(id: String, reload: Boolean): Flow<Result<Story?>> =
-        object : NetworkBoundResource<Story?, ApiResponse<ResStory>?>() {
-            override fun loadFromDB(): Flow<Story?> {
-                return localDataSource.getStories().map { list ->
-                    val story = list.find { it.id == id }
-                    story?.let { mapper.mapStoryEntityToDomain(it) }
-                }
-            }
+    override fun getStoryDetail(id: String): Flow<Result<Story?>> =
+        object : NetworkBoundProcessResource<Story?, ApiResponse<ResStory>?>() {
 
             override suspend fun createCall(): Result<ApiResponse<ResStory>?> {
                 return remoteDataSource.getStoryDetail(id)
             }
 
-            override suspend fun saveCallResult(data: ApiResponse<ResStory>?) {
+            override suspend fun callBackResult(data: ApiResponse<ResStory>?): Story? {
+                return data?.story?.let { mapper.mapStoryResponseToDomain(it) }
             }
-
-            override fun shouldFetch(data: Story?) = data == null || reload
 
         }.asFlow()
 
