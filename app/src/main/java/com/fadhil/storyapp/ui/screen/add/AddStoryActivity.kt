@@ -2,6 +2,7 @@ package com.fadhil.storyapp.ui.screen.add
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -16,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
@@ -52,6 +54,15 @@ class AddStoryActivity : AppCompatActivity(), LocationListener {
             finish()
         }
     }
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                requestPermission()
+            }
+        }
 
     private val launcherIntentCamera = registerForActivityResult(
         ActivityResultContracts.TakePicture()
@@ -124,6 +135,18 @@ class AddStoryActivity : AppCompatActivity(), LocationListener {
         }
     }
 
+    private fun requestPermission(callback: (() -> Unit)? = null) {
+        if (ContextCompat.checkSelfPermission(
+                this.applicationContext,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            callback?.invoke()
+        } else {
+            requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+    }
+
     /**
      * Try to get my current location by GPS or Network Provider
      */
@@ -163,17 +186,19 @@ class AddStoryActivity : AppCompatActivity(), LocationListener {
             }
 
 
-            // Application can use GPS or Network Provider
-            if (providerInfo.isNotEmpty()) {
-                locationManager.requestLocationUpdates(
-                    providerInfo,
-                    MIN_TIME_BW_UPDATES,
-                    MIN_DISTANCE_CHANGE_FOR_UPDATES,
-                    this
-                )
+            requestPermission {
+                // Application can use GPS or Network Provider
+                if (providerInfo.isNotEmpty()) {
+                    locationManager.requestLocationUpdates(
+                        providerInfo,
+                        MIN_TIME_BW_UPDATES,
+                        MIN_DISTANCE_CHANGE_FOR_UPDATES,
+                        this
+                    )
 
-                location = locationManager.getLastKnownLocation(providerInfo)
-                updateGPSCoordinates()
+                    location = locationManager.getLastKnownLocation(providerInfo)
+                    updateGPSCoordinates()
+                }
             }
         } catch (e: Exception) {
             //e.printStackTrace();

@@ -11,14 +11,13 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.fadhil.storyapp.R
 import com.fadhil.storyapp.databinding.FragmentStoryListBinding
 import com.fadhil.storyapp.ui.screen.add.AddStoryActivity
+import com.fadhil.storyapp.ui.screen.home.list.adapter.LoadingStateAdapter
 import com.fadhil.storyapp.ui.screen.home.list.adapter.PagingStoryAdapter
 import com.fadhil.storyapp.ui.screen.home.list.adapter.StoryComparator
 import com.fadhil.storyapp.ui.screen.home.list.adapter.StoryDelegate
 import com.fadhil.storyapp.ui.screen.maps.StoryMapsActivity
-import com.fadhil.storyapp.util.MarginItemDecoration
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -37,7 +36,7 @@ class StoryListFragment : Fragment() {
                     "Upload process complete.",
                     Snackbar.LENGTH_SHORT
                 ).show()
-                initData()
+                reload()
             }
         }
 
@@ -61,11 +60,11 @@ class StoryListFragment : Fragment() {
         with(binding) {
             rvUser.apply {
                 layoutManager = LinearLayoutManager(requireContext())
-                setHasFixedSize(false)
-                addItemDecoration(
-                    MarginItemDecoration(resources.getDimension(R.dimen.dimen_4dp).toInt())
+                adapter = mStoryPagingAdapter.withLoadStateFooter(
+                    footer = LoadingStateAdapter {
+                        mStoryPagingAdapter.retry()
+                    }
                 )
-                adapter = mStoryPagingAdapter
             }
         }
     }
@@ -104,15 +103,19 @@ class StoryListFragment : Fragment() {
     }
 
     private fun initData() {
-        viewModel.setSize(100)
+        viewModel.setSize(10)
         viewModel.setLocation(1)
         getPagingStory()
+    }
+
+    private fun reload() {
+        mStoryPagingAdapter.refresh()
     }
 
     private fun getPagingStory() {
         // Activities can use lifecycleScope directly; fragments use
         // viewLifecycleOwner.lifecycleScope.
-        viewModel.getStoriesPaging().observe(viewLifecycleOwner) { pagingData ->
+        viewModel.stories.observe(viewLifecycleOwner) { pagingData ->
             mStoryPagingAdapter.submitData(lifecycle, pagingData)
         }
     }

@@ -47,7 +47,7 @@ interface StoryApiService {
         @Query("page") page: Int?,
         @Query("size") size: Int?,
         @Query("location") location: Int?
-    ): Response<ApiContentResponse<List<ResStory>>?>
+    ): Response<ApiContentResponse<ResStory>?>
 
     @GET("stories/{id}")
     suspend fun getStoryDetail(

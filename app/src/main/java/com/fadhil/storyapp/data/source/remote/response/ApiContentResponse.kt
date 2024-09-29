@@ -8,7 +8,7 @@ data class ApiContentResponse<T>(
     @field:SerializedName("message")
     val message: String,
     @field:SerializedName("listStory")
-    val listStory: T?
+    val listStory: List<T>
 ) {
     fun isSuccess() = !error
 }

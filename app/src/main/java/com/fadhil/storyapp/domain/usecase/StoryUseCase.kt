@@ -19,9 +19,8 @@ class StoryUseCase @Inject constructor(
 
     override fun getPagingStory(
         size: Int?,
-        location: Int?,
-        reload: Boolean
-    ) = storyRepository.getPagingStory(size, location, reload)
+        location: Int?
+    ) = storyRepository.getPagingStory(size, location)
 
     override fun getStoryDetail(id: String) =
         storyRepository.getStoryDetail(id)

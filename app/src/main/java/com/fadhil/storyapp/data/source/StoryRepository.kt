@@ -3,13 +3,14 @@ package com.fadhil.storyapp.data.source
 import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.map
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.liveData
+import androidx.paging.map
 import com.fadhil.storyapp.data.NetworkBoundProcessResource
-import com.fadhil.storyapp.data.NetworkBoundResource
 import com.fadhil.storyapp.data.Result
 import com.fadhil.storyapp.data.source.local.StoryLocalDataSource
 import com.fadhil.storyapp.data.source.remote.StoryRemoteDataSource
@@ -22,11 +23,7 @@ import com.fadhil.storyapp.domain.model.Story
 import com.fadhil.storyapp.domain.repository.IStoryRepository
 import com.fadhil.storyapp.util.FileUtil
 import com.fadhil.storyapp.util.reduceFileImage
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -115,50 +112,42 @@ class StoryRepository @Inject constructor(
         location: Int?,
         reload: Boolean
     ): Flow<Result<List<Story>>> =
-        object : NetworkBoundResource<List<Story>, ApiContentResponse<List<ResStory>>?>() {
-            override fun loadFromDB(): Flow<List<Story>> {
-                return localDataSource.getStories().map {
-                    mapper.mapStoryEntityToDomainList(it)
-                }
-            }
+        object : NetworkBoundProcessResource<List<Story>, ApiContentResponse<ResStory>?>() {
 
-            override suspend fun createCall(): Result<ApiContentResponse<List<ResStory>>?> {
+            override suspend fun createCall(): Result<ApiContentResponse<ResStory>?> {
                 return remoteDataSource.getAllStories(page, size, location)
             }
 
-            override suspend fun saveCallResult(data: ApiContentResponse<List<ResStory>>?) {
-                coroutineScope {
-                    launch(Dispatchers.IO) {
-                        val stories =
-                            mapper.mapStoryResponseToEntityList(data?.listStory ?: emptyList())
-                        localDataSource.insertStory(stories)
-                    }
-                }
+            override suspend fun callBackResult(data: ApiContentResponse<ResStory>?): List<Story> {
+                return mapper.mapStoryResponseToDomainList(data?.listStory ?: emptyList())
             }
-
-            override fun shouldFetch(data: List<Story>?) = data?.isNotEmpty() != true || reload
 
         }.asFlow()
 
     @OptIn(ExperimentalPagingApi::class)
     override fun getPagingStory(
         size: Int?,
-        location: Int?,
-        reload: Boolean
+        location: Int?
     ): LiveData<PagingData<Story>> {
         storyPagingSource.location = location ?: 1
-        val pagingSourceFactory = { storyPagingSource }
         storyRemoteMediator.location = location ?: 1
+        val pagingSourceFactory = {
+            // storyPagingSource
+            localDataSource.getPagingStories()
+        }
         val pager = Pager(
             config = PagingConfig(
-                pageSize = size ?: 1,
-                enablePlaceholders = false
+                pageSize = 10,
             ),
             remoteMediator = storyRemoteMediator,
             pagingSourceFactory = pagingSourceFactory
         )
 
-        return pager.liveData
+        return pager.liveData.map { pagingData ->
+            pagingData.map {
+                mapper.mapStoryEntityToDomain(it)
+            }
+        }
     }
 
     override fun getStoryDetail(id: String): Flow<Result<Story?>> =

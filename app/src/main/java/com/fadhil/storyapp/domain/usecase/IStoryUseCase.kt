@@ -20,8 +20,7 @@ interface IStoryUseCase {
 
     fun getPagingStory(
         size: Int?,
-        location: Int?,
-        reload: Boolean
+        location: Int?
     ): LiveData<PagingData<Story>>
 
     fun getStoryDetail(id: String): Flow<Result<Story?>>
