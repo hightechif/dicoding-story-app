@@ -13,12 +13,21 @@ class StoryMapsViewModel @Inject constructor(
     private val storyUseCase: IStoryUseCase
 ) : ViewModel() {
 
-    private val _page = MutableLiveData<Int>().apply { postValue(0) }
-    val page: LiveData<Int> = _page
-    private val _size = MutableLiveData<Int>().apply { postValue(10) }
-    val size: LiveData<Int> = _size
-    private val _location = MutableLiveData<Int>().apply { postValue(1) }
-    val location: LiveData<Int> = _location
+    val page = MutableLiveData<Int>()
+    val size = MutableLiveData<Int>()
+    val location = MutableLiveData<Int>()
+
+    fun setPage(input: Int) {
+        page.value = input
+    }
+
+    fun setSize(input: Int) {
+        size.value = input
+    }
+
+    fun setLocation(input: Int) {
+        location.value = input
+    }
 
     fun getAllStories(reload: Boolean) =
         storyUseCase.getAllStory(page.value, size.value, location.value, reload).asLiveData()

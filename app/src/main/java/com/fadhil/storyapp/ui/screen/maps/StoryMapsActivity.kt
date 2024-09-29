@@ -125,6 +125,9 @@ class StoryMapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun getAllStories() {
+        viewModel.setPage(0)
+        viewModel.setSize(10)
+        viewModel.setLocation(1)
         viewModel.getAllStories(true)
             .observe(this) {
                 ProcessResult(it, object : ProcessResultDelegate<List<Story>?> {
