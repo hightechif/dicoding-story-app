@@ -13,13 +13,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.fadhil.storyapp.R
-import com.fadhil.storyapp.data.ProcessResult
-import com.fadhil.storyapp.data.ProcessResultDelegate
 import com.fadhil.storyapp.databinding.FragmentStoryListBinding
-import com.fadhil.storyapp.domain.model.Story
 import com.fadhil.storyapp.ui.screen.add.AddStoryActivity
 import com.fadhil.storyapp.ui.screen.home.list.adapter.PagingStoryAdapter
-import com.fadhil.storyapp.ui.screen.home.list.adapter.StoryAdapter
 import com.fadhil.storyapp.ui.screen.home.list.adapter.StoryComparator
 import com.fadhil.storyapp.ui.screen.home.list.adapter.StoryDelegate
 import com.fadhil.storyapp.ui.screen.maps.StoryMapsActivity
@@ -33,7 +29,6 @@ class StoryListFragment : Fragment() {
 
     private lateinit var binding: FragmentStoryListBinding
     private val viewModel: StoryListViewModel by viewModels()
-    private val mStoryAdapter = StoryAdapter()
     private val mStoryPagingAdapter = PagingStoryAdapter(StoryComparator)
 
     private val resultLauncher =
@@ -87,7 +82,6 @@ class StoryListFragment : Fragment() {
                 view.findNavController().navigate(toDetailUserFragment)
             }
         }
-        mStoryAdapter.delegate = callback
         mStoryPagingAdapter.delegate = callback
 
         binding.fabAdd.setOnClickListener {
@@ -107,34 +101,7 @@ class StoryListFragment : Fragment() {
         viewModel.setPage(0)
         viewModel.setSize(10)
         viewModel.setLocation(1)
-        // getAllStories()
         getPagingStory()
-    }
-
-    private fun getAllStories() {
-        viewModel.getAllStories(true).observe(viewLifecycleOwner) {
-            ProcessResult(it, object : ProcessResultDelegate<List<Story>?> {
-                override fun loading() {
-                    showLoadIndicator()
-                }
-
-                override fun error(code: String?, message: String?) {
-                    hideLoadIndicator()
-                }
-
-                override fun unAuthorize(message: String?) {
-                    hideLoadIndicator()
-                }
-
-                override fun success(data: List<Story>?) {
-                    hideLoadIndicator()
-                    if (data?.isNotEmpty() == true) {
-                        mStoryAdapter.setData(data)
-                    }
-                }
-
-            })
-        }
     }
 
     private fun getPagingStory() {

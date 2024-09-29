@@ -13,6 +13,7 @@ class StoryPagingSource @Inject constructor(
 ) : PagingSource<Int, Story>() {
 
     private val mapper = Mappers.getMapper(StoryMapper::class.java)
+    var location = 1
 
     override fun getRefreshKey(state: PagingState<Int, Story>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
@@ -24,7 +25,7 @@ class StoryPagingSource @Inject constructor(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Story> {
         return try {
             val position = params.key ?: INITIAL_PAGE_INDEX
-            val responseData = remote.getAllStories(position, params.loadSize, location = 1)
+            val responseData = remote.getAllStories(position, params.loadSize, location)
             val resStory = responseData.data?.listStory
 
             val list = resStory?.let { mapper.mapStoryResponseToDomainList(it) }
@@ -39,7 +40,7 @@ class StoryPagingSource @Inject constructor(
     }
 
     private companion object {
-        const val INITIAL_PAGE_INDEX = 1
+        const val INITIAL_PAGE_INDEX = 0
     }
 
 }

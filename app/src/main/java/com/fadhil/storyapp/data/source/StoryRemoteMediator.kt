@@ -31,6 +31,7 @@ class StoryRemoteMediator @Inject constructor(
 ) : RemoteMediator<Int, Story>() {
 
     private val mapper = Mappers.getMapper(StoryMapper::class.java)
+    var location: Int = 1
 
     override suspend fun initialize(): InitializeAction {
         return InitializeAction.LAUNCH_INITIAL_REFRESH
@@ -39,7 +40,7 @@ class StoryRemoteMediator @Inject constructor(
     override suspend fun load(loadType: LoadType, state: PagingState<Int, Story>): MediatorResult {
         val page = INITIAL_PAGE_INDEX
         try {
-            val responseData = apiService.getAllStories(page, state.config.pageSize, location = 1)
+            val responseData = apiService.getAllStories(page, state.config.pageSize, location)
             val resStory = getResult { responseData }
             val data = resStory.data?.listStory?.let { mapper.mapStoryResponseToEntityList(it) }
                 ?: emptyList()
@@ -48,7 +49,6 @@ class StoryRemoteMediator @Inject constructor(
                 if (loadType == LoadType.REFRESH) {
                     database.storyDao().deleteAll()
                 }
-                mapper
                 database.storyDao().insertStory(data)
             }
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
@@ -58,7 +58,7 @@ class StoryRemoteMediator @Inject constructor(
     }
 
     private companion object {
-        const val INITIAL_PAGE_INDEX = 1
+        const val INITIAL_PAGE_INDEX = 0
     }
 
     suspend fun <T> getResult(call: suspend () -> Response<T>): Result<T> {

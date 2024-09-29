@@ -1,6 +1,10 @@
 package com.fadhil.storyapp.ui.screen.add
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -22,17 +26,25 @@ import com.fadhil.storyapp.data.Result
 import com.fadhil.storyapp.data.source.remote.response.FileUploadResponse
 import com.fadhil.storyapp.databinding.ActivityAddStoryBinding
 import com.fadhil.storyapp.util.CameraUtils
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
+
 @AndroidEntryPoint
-class AddStoryActivity : AppCompatActivity() {
+class AddStoryActivity : AppCompatActivity(), LocationListener {
 
     private lateinit var binding: ActivityAddStoryBinding
     private val viewModel: AddStoryViewModel by viewModels()
     private var currentImageUri: Uri? = null
+    private var isGPSEnabled: Boolean = false
+    private var isNetworkEnabled: Boolean = false
+    private var isGPSTrackingEnabled: Boolean = false
+    var location: Location? = null
+    private lateinit var locationManager: LocationManager
+    private lateinit var providerInfo: String
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -45,6 +57,7 @@ class AddStoryActivity : AppCompatActivity() {
         ActivityResultContracts.TakePicture()
     ) { isSuccess ->
         if (isSuccess) {
+            getLocation()
             showImage()
         } else {
             currentImageUri = null
@@ -55,6 +68,7 @@ class AddStoryActivity : AppCompatActivity() {
         ActivityResultContracts.PickVisualMedia()
     ) { uri: Uri? ->
         if (uri != null) {
+            getLocation()
             currentImageUri = uri
             showImage()
         } else {
@@ -82,6 +96,7 @@ class AddStoryActivity : AppCompatActivity() {
 
     private fun setupListener() {
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+        getLocation()
         binding.btnCamera.setOnClickListener {
             startCamera()
         }
@@ -106,6 +121,73 @@ class AddStoryActivity : AppCompatActivity() {
         })
         binding.btnUpload.setOnClickListener {
             uploadStory()
+        }
+    }
+
+    /**
+     * Try to get my current location by GPS or Network Provider
+     */
+    @SuppressLint("MissingPermission")
+    fun getLocation() {
+        try {
+            locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
+
+            //getting GPS status
+            isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+
+            //getting network status
+            isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+
+            // Try to get location if you GPS Service is enabled
+            if (isGPSEnabled) {
+                this.isGPSTrackingEnabled = true
+                Timber.i("Application use GPS Service")
+
+                /*
+                 * This provider determines location using
+                 * satellites. Depending on conditions, this provider may take a while to return
+                 * a location fix.
+                 */
+                providerInfo = LocationManager.GPS_PROVIDER
+            } else if (isNetworkEnabled) { // Try to get location if you Network Service is enabled
+                this.isGPSTrackingEnabled = true
+
+                Timber.i("Application use Network State to get GPS coordinates")
+
+                /*
+                 * This provider determines location based on
+                 * availability of cell tower and WiFi access points. Results are retrieved
+                 * by means of a network lookup.
+                 */
+                providerInfo = LocationManager.NETWORK_PROVIDER
+            }
+
+
+            // Application can use GPS or Network Provider
+            if (providerInfo.isNotEmpty()) {
+                locationManager.requestLocationUpdates(
+                    providerInfo,
+                    MIN_TIME_BW_UPDATES,
+                    MIN_DISTANCE_CHANGE_FOR_UPDATES,
+                    this
+                )
+
+                location = locationManager.getLastKnownLocation(providerInfo)
+                updateGPSCoordinates()
+            }
+        } catch (e: Exception) {
+            //e.printStackTrace();
+            Timber.e("Impossible to connect to LocationManager", e)
+        }
+    }
+
+    /**
+     * Update GPSTracker latitude and longitude
+     */
+    private fun updateGPSCoordinates() {
+        if (location != null) {
+            val latLng = LatLng(location!!.latitude, location!!.longitude)
+            viewModel.currentLatLng.postValue(latLng)
         }
     }
 
@@ -150,8 +232,8 @@ class AddStoryActivity : AppCompatActivity() {
                 this@AddStoryActivity,
                 viewModel.description.value!!,
                 currentImageUri!!,
-                0.0,
-                0.0
+                viewModel.currentLatLng.value?.latitude,
+                viewModel.currentLatLng.value?.longitude
             ).collect {
                 processUploadResponse(it)
             }
@@ -185,7 +267,15 @@ class AddStoryActivity : AppCompatActivity() {
         })
     }
 
+    override fun onLocationChanged(location: Location) {
+        val latLng = LatLng(location.latitude, location.longitude)
+        viewModel.currentLatLng.postValue(latLng)
+    }
+
     companion object {
+        private const val MIN_DISTANCE_CHANGE_FOR_UPDATES: Float = 10F // 10 meters
+        private const val MIN_TIME_BW_UPDATES: Long = (1000 * 60 * 1).toLong() // 1 minute
+
         fun open(
             originActivity: FragmentActivity,
             resultLauncher: ActivityResultLauncher<Intent>? = null

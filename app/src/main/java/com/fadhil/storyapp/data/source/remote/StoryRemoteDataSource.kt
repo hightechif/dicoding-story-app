@@ -13,9 +13,11 @@ class StoryRemoteDataSource @Inject constructor(
 
     suspend fun addNewStory(
         photo: MultipartBody.Part,
-        request: RequestBody
+        description: RequestBody,
+        lat: RequestBody,
+        lon: RequestBody,
     ): Result<FileUploadResponse?> {
-        return getResult { service.addNewStory(photo, request) }
+        return getResult { service.addNewStory(photo, description, lat, lon) }
     }
 
     suspend fun addNewStoryAsGuest(

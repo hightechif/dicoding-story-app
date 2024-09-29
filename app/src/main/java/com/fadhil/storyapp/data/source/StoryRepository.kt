@@ -60,9 +60,11 @@ class StoryRepository @Inject constructor(
                 Timber.d("Image File", "showImage: ${imageFile.path}")
 
                 val multipartBody = createPart("photo", imageFile)
-                val requestBody = description.toRequestBody("text/plain".toMediaType())
+                val descReqBody = description.toRequestBody("text/plain".toMediaType())
+                val latReqBody = lat.toString().toRequestBody("text/plain".toMediaType())
+                val lonReqBody = lon.toString().toRequestBody("text/plain".toMediaType())
 
-                return remoteDataSource.addNewStory(multipartBody, requestBody)
+                return remoteDataSource.addNewStory(multipartBody, descReqBody, latReqBody, lonReqBody)
             }
 
             override suspend fun callBackResult(data: FileUploadResponse?): FileUploadResponse? {
@@ -143,10 +145,12 @@ class StoryRepository @Inject constructor(
         location: Int?,
         reload: Boolean
     ): LiveData<PagingData<Story>> {
+        storyPagingSource.location = location ?: 1
         val pagingSourceFactory = { storyPagingSource }
+        storyRemoteMediator.location = location ?: 1
         val pager = Pager(
             config = PagingConfig(
-                pageSize = 5,
+                pageSize = size ?: 1,
                 enablePlaceholders = false
             ),
             remoteMediator = storyRemoteMediator,
