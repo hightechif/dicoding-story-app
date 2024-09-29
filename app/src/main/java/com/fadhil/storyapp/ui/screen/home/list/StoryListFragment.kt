@@ -6,12 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.fadhil.storyapp.R
 import com.fadhil.storyapp.databinding.FragmentStoryListBinding
 import com.fadhil.storyapp.ui.screen.add.AddStoryActivity
@@ -22,7 +21,6 @@ import com.fadhil.storyapp.ui.screen.maps.StoryMapsActivity
 import com.fadhil.storyapp.util.MarginItemDecoration
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class StoryListFragment : Fragment() {
@@ -83,6 +81,14 @@ class StoryListFragment : Fragment() {
             }
         }
         mStoryPagingAdapter.delegate = callback
+        mStoryPagingAdapter.registerAdapterDataObserver(object :
+            RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                if (positionStart == 0) {
+                    binding.rvUser.layoutManager?.scrollToPosition(0)
+                }
+            }
+        })
 
         binding.fabAdd.setOnClickListener {
             AddStoryActivity.open(requireActivity(), resultLauncher)
@@ -108,18 +114,8 @@ class StoryListFragment : Fragment() {
         // Activities can use lifecycleScope directly; fragments use
         // viewLifecycleOwner.lifecycleScope.
         viewModel.getStoriesPaging().observe(viewLifecycleOwner) { pagingData ->
-            lifecycleScope.launch {
-                mStoryPagingAdapter.submitData(pagingData)
-            }
+            mStoryPagingAdapter.submitData(lifecycle, pagingData)
         }
-    }
-
-    private fun showLoadIndicator() {
-        binding.flProgress.isVisible = true
-    }
-
-    private fun hideLoadIndicator() {
-        binding.flProgress.isVisible = false
     }
 
 }
