@@ -26,7 +26,6 @@ import com.fadhil.storyapp.ui.screen.maps.StoryMapsActivity
 import com.fadhil.storyapp.util.MarginItemDecoration
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -79,7 +78,7 @@ class StoryListFragment : Fragment() {
     }
 
     private fun setupListener() {
-        mStoryAdapter.delegate = object : StoryDelegate {
+        val callback = object : StoryDelegate {
             override fun setOnClickListener(view: View, id: String) {
                 val toDetailUserFragment =
                     StoryListFragmentDirections.actionStoryListFragmentToStoryDetailFragment(
@@ -88,6 +87,8 @@ class StoryListFragment : Fragment() {
                 view.findNavController().navigate(toDetailUserFragment)
             }
         }
+        mStoryAdapter.delegate = callback
+        mStoryPagingAdapter.delegate = callback
 
         binding.fabAdd.setOnClickListener {
             AddStoryActivity.open(requireActivity(), resultLauncher)
