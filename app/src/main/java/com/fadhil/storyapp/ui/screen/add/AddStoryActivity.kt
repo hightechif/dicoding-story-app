@@ -46,6 +46,8 @@ class AddStoryActivity : AppCompatActivity() {
     ) { isSuccess ->
         if (isSuccess) {
             showImage()
+        } else {
+            currentImageUri = null
         }
     }
 
