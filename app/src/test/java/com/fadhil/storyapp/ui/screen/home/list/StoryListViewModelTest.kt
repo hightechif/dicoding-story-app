@@ -74,8 +74,7 @@ class StoryListViewModelTest {
         `when`(
             storyUseCase.getPagingStory(
                 viewModel.size.value,
-                viewModel.location.value,
-                true
+                viewModel.location.value
             )
         ).thenReturn(expectedPagingData)
         val pagedStoryResponse = viewModel.getStoriesPaging().getOrAwaitValue()
@@ -96,8 +95,7 @@ class StoryListViewModelTest {
         `when`(
             storyUseCase.getPagingStory(
                 viewModel.size.value,
-                viewModel.location.value,
-                true
+                viewModel.location.value
             )
         ).thenReturn(expectedPagingData)
         val pagedStoryResponse = viewModel.getStoriesPaging().getOrAwaitValue()
