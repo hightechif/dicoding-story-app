@@ -38,7 +38,6 @@ class StoryListViewModelTest {
     @Before
     fun setup() {
         viewModel = StoryListViewModel(storyUseCase)
-        viewModel.setPage(0)
         viewModel.setSize(10)
         viewModel.setLocation(1)
         val updateCallback = object : ListUpdateCallback {
@@ -74,7 +73,6 @@ class StoryListViewModelTest {
         expectedPagingData.value = PagingData.from(dummyValidPagedStory)
         `when`(
             storyUseCase.getPagingStory(
-                viewModel.page.value,
                 viewModel.size.value,
                 viewModel.location.value,
                 true
@@ -97,7 +95,6 @@ class StoryListViewModelTest {
         expectedPagingData.value = PagingData.from(dummyEmptyPagedStory)
         `when`(
             storyUseCase.getPagingStory(
-                viewModel.page.value,
                 viewModel.size.value,
                 viewModel.location.value,
                 true

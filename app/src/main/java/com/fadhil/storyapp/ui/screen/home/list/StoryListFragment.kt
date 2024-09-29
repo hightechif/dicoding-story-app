@@ -104,7 +104,6 @@ class StoryListFragment : Fragment() {
     }
 
     private fun initData() {
-        viewModel.setPage(0)
         viewModel.setSize(10)
         viewModel.setLocation(1)
         getPagingStory()

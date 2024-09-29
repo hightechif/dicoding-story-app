@@ -32,6 +32,6 @@ class StoryListViewModel @Inject constructor(
         storyUseCase.getAllStory(page.value, size.value, location.value, reload).asLiveData()
 
     fun getStoriesPaging() =
-        storyUseCase.getPagingStory(page.value, size.value, location.value, true)
+        storyUseCase.getPagingStory(size.value, location.value, true)
 
 }

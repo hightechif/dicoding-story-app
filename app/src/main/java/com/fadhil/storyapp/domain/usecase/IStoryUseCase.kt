@@ -19,7 +19,6 @@ interface IStoryUseCase {
     ): Flow<Result<List<Story>>>
 
     fun getPagingStory(
-        page: Int?,
         size: Int?,
         location: Int?,
         reload: Boolean

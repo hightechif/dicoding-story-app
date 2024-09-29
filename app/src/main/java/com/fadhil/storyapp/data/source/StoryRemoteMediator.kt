@@ -58,10 +58,10 @@ class StoryRemoteMediator @Inject constructor(
     }
 
     private companion object {
-        const val INITIAL_PAGE_INDEX = 0
+        const val INITIAL_PAGE_INDEX = 1
     }
 
-    suspend fun <T> getResult(call: suspend () -> Response<T>): Result<T> {
+    private suspend fun <T> getResult(call: suspend () -> Response<T>): Result<T> {
         try {
             val response = call()
             val code = response.code()

@@ -32,7 +32,6 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.mapstruct.factory.Mappers
-import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -57,14 +56,18 @@ class StoryRepository @Inject constructor(
         object : NetworkBoundProcessResource<FileUploadResponse?, FileUploadResponse?>() {
             override suspend fun createCall(): Result<FileUploadResponse?> {
                 val imageFile = uriToFile(uri, context).reduceFileImage()
-                Timber.d("Image File", "showImage: ${imageFile.path}")
 
                 val multipartBody = createPart("photo", imageFile)
                 val descReqBody = description.toRequestBody("text/plain".toMediaType())
-                val latReqBody = lat.toString().toRequestBody("text/plain".toMediaType())
-                val lonReqBody = lon.toString().toRequestBody("text/plain".toMediaType())
+                val latReqBody = lat?.toString()?.toRequestBody("text/plain".toMediaType())
+                val lonReqBody = lon?.toString()?.toRequestBody("text/plain".toMediaType())
 
-                return remoteDataSource.addNewStory(multipartBody, descReqBody, latReqBody, lonReqBody)
+                return remoteDataSource.addNewStory(
+                    multipartBody,
+                    descReqBody,
+                    latReqBody,
+                    lonReqBody
+                )
             }
 
             override suspend fun callBackResult(data: FileUploadResponse?): FileUploadResponse? {
@@ -82,7 +85,6 @@ class StoryRepository @Inject constructor(
         object : NetworkBoundProcessResource<FileUploadResponse?, FileUploadResponse?>() {
             override suspend fun createCall(): Result<FileUploadResponse?> {
                 val imageFile = uriToFile(uri, context).reduceFileImage()
-                Timber.d("Image File", "showImage: ${imageFile.path}")
 
                 val multipartBody = createPart("photo-guest", imageFile)
                 val requestBody = description.toRequestBody("text/plain".toMediaType())
@@ -140,7 +142,6 @@ class StoryRepository @Inject constructor(
 
     @OptIn(ExperimentalPagingApi::class)
     override fun getPagingStory(
-        page: Int?,
         size: Int?,
         location: Int?,
         reload: Boolean
