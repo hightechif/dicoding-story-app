@@ -33,24 +33,7 @@ class StoryListViewModelTest {
     private lateinit var viewModel: StoryListViewModel
     private val dummyValidPagedStory = DataDummy.generateDummyValidStory()
     private val dummyEmptyPagedStory = DataDummy.generateDummyEmptyStory()
-    private val updateCallback = object : ListUpdateCallback {
-        override fun onInserted(position: Int, count: Int) {
-
-        }
-
-        override fun onRemoved(position: Int, count: Int) {
-
-        }
-
-        override fun onMoved(fromPosition: Int, toPosition: Int) {
-
-        }
-
-        override fun onChanged(position: Int, count: Int, payload: Any?) {
-
-        }
-
-    }
+    private lateinit var asyncPagingDataDiffer: AsyncPagingDataDiffer<Story>
 
     @Before
     fun setup() {
@@ -58,6 +41,28 @@ class StoryListViewModelTest {
         viewModel.setPage(0)
         viewModel.setSize(10)
         viewModel.setLocation(1)
+        val updateCallback = object : ListUpdateCallback {
+            override fun onInserted(position: Int, count: Int) {
+
+            }
+
+            override fun onRemoved(position: Int, count: Int) {
+
+            }
+
+            override fun onMoved(fromPosition: Int, toPosition: Int) {
+
+            }
+
+            override fun onChanged(position: Int, count: Int, payload: Any?) {
+
+            }
+
+        }
+        asyncPagingDataDiffer = AsyncPagingDataDiffer(
+            diffCallback = StoryComparator,
+            updateCallback = updateCallback
+        )
     }
 
     @get:Rule
@@ -76,12 +81,8 @@ class StoryListViewModelTest {
             )
         ).thenReturn(expectedPagingData)
         val pagedStoryResponse = viewModel.getStoriesPaging().getOrAwaitValue()
-        val asyncPagingDataDiffer = AsyncPagingDataDiffer(
-            diffCallback = StoryComparator,
-            updateCallback = updateCallback
-        )
         asyncPagingDataDiffer.submitData(pagedStoryResponse)
-        Assert.assertNotNull(pagedStoryResponse)
+        Assert.assertNotNull(asyncPagingDataDiffer.snapshot())
         Assert.assertEquals(dummyValidPagedStory.size, asyncPagingDataDiffer.snapshot().size)
         Assert.assertEquals(
             dummyValidPagedStory.first(),
@@ -103,12 +104,8 @@ class StoryListViewModelTest {
             )
         ).thenReturn(expectedPagingData)
         val pagedStoryResponse = viewModel.getStoriesPaging().getOrAwaitValue()
-        val asyncPagingDataDiffer = AsyncPagingDataDiffer(
-            diffCallback = StoryComparator,
-            updateCallback = updateCallback
-        )
         asyncPagingDataDiffer.submitData(pagedStoryResponse)
-        Assert.assertNotNull(pagedStoryResponse)
+        Assert.assertNotNull(asyncPagingDataDiffer.snapshot())
         Assert.assertEquals(dummyEmptyPagedStory.size, asyncPagingDataDiffer.snapshot().size)
     }
 
