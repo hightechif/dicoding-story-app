@@ -5,6 +5,7 @@ plugins {
     id("kotlin-kapt")
     id("androidx.navigation.safeargs")
     id("com.google.dagger.hilt.android")
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -57,7 +58,7 @@ val versions by rootProject.extra(
         "material_version" to "1.9.0",
 
         /** testing */
-        "junit_version" to "4.13.2",
+        "junit_version" to "5.7.2",
         "junit_ext_version" to "1.1.3",
         "espresso_core_version" to "3.4.0",
 
@@ -107,10 +108,18 @@ dependencies {
     /** navigation */
     implementation("androidx.navigation:navigation-fragment-ktx:2.5.3")
     implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
 
     /** testing */
-    testImplementation("junit:junit:${versions["junit_version"]}")
-    androidTestImplementation("androidx.test.ext:junit:${versions["junit_ext_version"]}")
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    //mockito
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.inline)
+    //special testing
+    testImplementation(libs.androidx.core.testing) // InstantTaskExecutorRule
+    testImplementation(libs.kotlinx.coroutines.test) //TestCoroutineDispatcher
 
     /** coroutines */
     androidTestImplementation("androidx.test.espresso:espresso-core:${versions["espresso_core_version"]}")
@@ -123,6 +132,8 @@ dependencies {
     kapt("androidx.room:room-compiler:${versions["room_version"]}")
     implementation("androidx.room:room-ktx:${versions["room_version"]}")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.room:room-paging:${versions["room_version"]}")
+
 
     /** networking */
     implementation("com.google.code.gson:gson:${versions["gson_version"]}")
@@ -145,4 +156,6 @@ dependencies {
     implementation("de.hdodenhof:circleimageview:${versions["circleimageview_version"]}")
     implementation("com.github.bumptech.glide:glide:${versions["glide_version"]}")
     implementation("id.zelory:compressor:${versions["compressor_version"]}")
+    implementation(libs.androidx.paging.runtime.ktx)
+
 }

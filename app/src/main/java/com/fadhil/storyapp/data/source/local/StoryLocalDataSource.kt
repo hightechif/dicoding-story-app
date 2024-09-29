@@ -10,6 +10,6 @@ class StoryLocalDataSource @Inject constructor(
 
     fun getStories() = dao.getStories()
 
-    suspend fun insertStory(story: StoryEntity) = dao.insertStories(story)
+    suspend fun insertStory(stories: List<StoryEntity>) = dao.insertStory(stories)
 
 }

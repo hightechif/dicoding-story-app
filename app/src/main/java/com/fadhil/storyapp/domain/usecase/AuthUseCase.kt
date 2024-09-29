@@ -1,14 +1,14 @@
 package com.fadhil.storyapp.domain.usecase
 
 import com.fadhil.storyapp.data.Result
-import com.fadhil.storyapp.data.source.AuthRepository
 import com.fadhil.storyapp.data.source.remote.response.ApiResponse
 import com.fadhil.storyapp.data.source.remote.response.ResLogin
+import com.fadhil.storyapp.domain.repository.IAuthRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class AuthUseCase @Inject constructor(
-    private val repository: AuthRepository
+    private val repository: IAuthRepository
 ) : IAuthUseCase {
 
     override fun register(

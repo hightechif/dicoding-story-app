@@ -2,6 +2,12 @@ package com.fadhil.storyapp.data.source
 
 import android.content.Context
 import android.net.Uri
+import androidx.lifecycle.LiveData
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.liveData
 import com.fadhil.storyapp.data.NetworkBoundProcessResource
 import com.fadhil.storyapp.data.NetworkBoundResource
 import com.fadhil.storyapp.data.Result
@@ -34,7 +40,9 @@ import javax.inject.Inject
 
 class StoryRepository @Inject constructor(
     private val remoteDataSource: StoryRemoteDataSource,
-    private val localDataSource: StoryLocalDataSource
+    private val localDataSource: StoryLocalDataSource,
+    private val storyRemoteMediator: StoryRemoteMediator,
+    private val storyPagingSource: StoryPagingSource
 ) : IStoryRepository {
 
     private val mapper = Mappers.getMapper(StoryMapper::class.java)
@@ -85,7 +93,7 @@ class StoryRepository @Inject constructor(
             }
         }.asFlow()
 
-    private suspend fun createPart(
+    private fun createPart(
         imageName: String,
         imageFile: File
     ): MultipartBody.Part {
@@ -117,10 +125,9 @@ class StoryRepository @Inject constructor(
             override suspend fun saveCallResult(data: ApiContentResponse<List<ResStory>>?) {
                 coroutineScope {
                     launch(Dispatchers.IO) {
-                        data?.listStory?.forEach { story ->
-                            val storyEntity = mapper.mapStoryResponseToEntity(story)
-                            localDataSource.insertStory(storyEntity)
-                        }
+                        val stories =
+                            mapper.mapStoryResponseToEntityList(data?.listStory ?: emptyList())
+                        localDataSource.insertStory(stories)
                     }
                 }
             }
@@ -129,23 +136,36 @@ class StoryRepository @Inject constructor(
 
         }.asFlow()
 
-    override fun getStoryDetail(id: String, reload: Boolean): Flow<Result<Story?>> =
-        object : NetworkBoundResource<Story?, ApiResponse<ResStory>?>() {
-            override fun loadFromDB(): Flow<Story?> {
-                return localDataSource.getStories().map { list ->
-                    val story = list.find { it.id == id }
-                    story?.let { mapper.mapStoryEntityToDomain(it) }
-                }
-            }
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getPagingStory(
+        page: Int?,
+        size: Int?,
+        location: Int?,
+        reload: Boolean
+    ): LiveData<PagingData<Story>> {
+        val pagingSourceFactory = { storyPagingSource }
+        val pager = Pager(
+            config = PagingConfig(
+                pageSize = 5,
+                enablePlaceholders = false
+            ),
+            remoteMediator = storyRemoteMediator,
+            pagingSourceFactory = pagingSourceFactory
+        )
+
+        return pager.liveData
+    }
+
+    override fun getStoryDetail(id: String): Flow<Result<Story?>> =
+        object : NetworkBoundProcessResource<Story?, ApiResponse<ResStory>?>() {
 
             override suspend fun createCall(): Result<ApiResponse<ResStory>?> {
                 return remoteDataSource.getStoryDetail(id)
             }
 
-            override suspend fun saveCallResult(data: ApiResponse<ResStory>?) {
+            override suspend fun callBackResult(data: ApiResponse<ResStory>?): Story? {
+                return data?.story?.let { mapper.mapStoryResponseToDomain(it) }
             }
-
-            override fun shouldFetch(data: Story?) = data == null || reload
 
         }.asFlow()
 
@@ -160,6 +180,25 @@ class StoryRepository @Inject constructor(
         outputStream.close()
         inputStream.close()
         return myFile
+    }
+
+    companion object {
+        @Volatile
+        private var instance: IStoryRepository? = null
+        fun getInstance(
+            remoteDataSource: StoryRemoteDataSource,
+            localDataSource: StoryLocalDataSource,
+            storyRemoteMediator: StoryRemoteMediator,
+            storyPagingSource: StoryPagingSource
+        ): IStoryRepository =
+            instance ?: synchronized(this) {
+                instance ?: StoryRepository(
+                    remoteDataSource,
+                    localDataSource,
+                    storyRemoteMediator,
+                    storyPagingSource
+                )
+            }.also { instance = it }
     }
 
 }

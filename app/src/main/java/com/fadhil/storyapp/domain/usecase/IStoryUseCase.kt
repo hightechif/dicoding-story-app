@@ -2,8 +2,9 @@ package com.fadhil.storyapp.domain.usecase
 
 import android.content.Context
 import android.net.Uri
+import androidx.lifecycle.LiveData
+import androidx.paging.PagingData
 import com.fadhil.storyapp.data.Result
-import com.fadhil.storyapp.data.source.remote.response.ApiResponse
 import com.fadhil.storyapp.data.source.remote.response.FileUploadResponse
 import com.fadhil.storyapp.domain.model.Story
 import kotlinx.coroutines.flow.Flow
@@ -17,7 +18,14 @@ interface IStoryUseCase {
         reload: Boolean
     ): Flow<Result<List<Story>>>
 
-    fun getStoryDetail(id: String, reload: Boolean): Flow<Result<Story?>>
+    fun getPagingStory(
+        page: Int?,
+        size: Int?,
+        location: Int?,
+        reload: Boolean
+    ): LiveData<PagingData<Story>>
+
+    fun getStoryDetail(id: String): Flow<Result<Story?>>
 
     fun addNewStory(
         context: Context,

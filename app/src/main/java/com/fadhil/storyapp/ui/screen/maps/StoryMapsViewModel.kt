@@ -1,15 +1,15 @@
-package com.fadhil.storyapp.ui.screen.home.list
+package com.fadhil.storyapp.ui.screen.maps
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
 import com.fadhil.storyapp.domain.usecase.IStoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class StoryListViewModel @Inject constructor(
+class StoryMapsViewModel @Inject constructor(
     private val storyUseCase: IStoryUseCase
 ) : ViewModel() {
 
@@ -31,8 +31,5 @@ class StoryListViewModel @Inject constructor(
 
     fun getAllStories(reload: Boolean) =
         storyUseCase.getAllStory(page.value, size.value, location.value, reload).asLiveData()
-
-    fun getStoriesPaging() =
-        storyUseCase.getPagingStory(page.value, size.value, location.value, true)
 
 }

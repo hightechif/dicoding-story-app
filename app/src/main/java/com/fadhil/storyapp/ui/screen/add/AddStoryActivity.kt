@@ -11,6 +11,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
@@ -45,6 +46,8 @@ class AddStoryActivity : AppCompatActivity() {
     ) { isSuccess ->
         if (isSuccess) {
             showImage()
+        } else {
+            currentImageUri = null
         }
     }
 
@@ -185,10 +188,14 @@ class AddStoryActivity : AppCompatActivity() {
     companion object {
         fun open(
             originActivity: FragmentActivity,
-            resultLauncher: ActivityResultLauncher<Intent>
+            resultLauncher: ActivityResultLauncher<Intent>? = null
         ) {
             val intent = Intent(originActivity, AddStoryActivity::class.java)
-            resultLauncher.launch(intent)
+            if (resultLauncher != null) {
+                resultLauncher.launch(intent)
+            } else {
+                ActivityCompat.startActivity(originActivity, intent, null)
+            }
         }
     }
 
